@@ -11,7 +11,7 @@ func TestNewVersion(t *testing.T) {
 		v    string
 		want string
 	}{
-		// Taken from composer/semver VersionParserTest::successfulNormalizedVersions()
+		// taken from composer/semver VersionParserTest::successfulNormalizedVersions()
 		// https://github.com/composer/semver/blob/1d09200268e7d1052ded8e5da9c73c96a63d18f5/tests/VersionParserTest.php#L65-L142
 		{"none", "1.0.0", "1.0.0.0"},
 		{"none/2", "1.2.3.4", "1.2.3.4"},
@@ -56,6 +56,14 @@ func TestNewVersion(t *testing.T) {
 		{"space padding", " 1.0.0", "1.0.0.0"},
 		{"space padding/2", "1.0.0 ", "1.0.0.0"},
 
+		// taken from https://semver.org/#spec-item-11
+		{"semver pre-release/1", "1.0.0-alpha", "1.0.0.0-alpha"},
+		{"semver pre-release/2", "1.0.0-alpha.1", "1.0.0.0-alpha1"},
+		{"semver pre-release/3", "1.0.0-beta", "1.0.0.0-beta"},
+		{"semver pre-release/4", "1.0.0-beta.2", "1.0.0.0-beta2"},
+		{"semver pre-release/5", "1.0.0-beta.11", "1.0.0.0-beta11"},
+		{"semver pre-release/6", "1.0.0-rc.1", "1.0.0.0-RC1"},
+
 		// additional tests
 		{"parses dates y-m", "2010-01", "2010.1.0.0"},
 	}
@@ -83,7 +91,7 @@ func TestNewVersion_ParseError(t *testing.T) {
 		v       string
 		wantErr error
 	}{
-		// composer/semver supports a lot of different version formats, but we only support a subset of them.
+		// composer/semver supports a lot of different version formats, but we only support a subset of them
 		// taken from composer/semver VersionParserTest::successfulNormalizedVersions()
 		// https://github.com/composer/semver/blob/1d09200268e7d1052ded8e5da9c73c96a63d18f5/tests/VersionParserTest.php#L65-L142
 		{"parses state", "1.0.0RC1dev", ErrNotFixedVersion},
@@ -120,7 +128,7 @@ func TestNewVersion_ParseError(t *testing.T) {
 		{"dev with mad name", "dev-1.0.0-dev<1.0.5-dev", ErrNotFixedVersion},
 		{"dev prefix with spaces", "dev-foo bar", ErrNotFixedVersion},
 
-		// composer/semver doesn't support these.
+		// composer/semver doesn't support these
 		// taken from composer/semver VersionParserTest::failingNormalizedVersions()
 		// https://github.com/composer/semver/blob/1d09200268e7d1052ded8e5da9c73c96a63d18f5/tests/VersionParserTest.php#L158-L183
 		{"empty", "", ErrEmptyString},
@@ -149,6 +157,10 @@ func TestNewVersion_ParseError(t *testing.T) {
 		{"invalid CalVer (as MAJOR) versions/YYYYMMDDh", "202301311.0.0", ErrInvalidVersionString},
 		{"invalid CalVer (as MAJOR) versions/YYYYMMDDhhm", "20230131000.0.0", ErrInvalidVersionString},
 		{"invalid CalVer (as MAJOR) versions/YYYYMMDDhhmmX", "2023013100000.0.0", ErrInvalidVersionString},
+
+		// composer/semver doesn't support these.
+		// taken from https://semver.org/#spec-item-11
+		{"incompatible semver", "1.0.0-alpha.beta", ErrInvalidVersionString},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -171,6 +183,61 @@ func TestNewVersion_ParseError(t *testing.T) {
 
 			if wantParseError.original != tt.v {
 				t.Errorf("NewVersion() error.original = %v, want %v", wantParseError.original, tt.v)
+			}
+		})
+	}
+}
+
+func TestVersion_Compare(t *testing.T) {
+	tests := []struct {
+		v    string
+		w    string
+		want int
+	}{
+		{"1", "1", 0},
+		{"1", "2", -1},
+		{"1.2", "1.2", 0},
+		{"1.2", "1.3", -1},
+		{"1.2.3", "1.2.3", 0},
+		{"1.2.3", "1.2.4", -1},
+		{"1.2.3.4", "1.2.3.4", 0},
+		{"1.2.3.4", "1.2.3.5", -1},
+		{"1.2.3.4-beta1", "1.2.3.4-beta2", -1},
+		{"1.2.3.4-beta1.1", "1.2.3.4-beta2", -1},
+		{"1.2.3.4-beta2", "1.2.3.4-beta11", -1},
+		{"1.2.3.4-beta2.22", "1.2.3.4-beta11", -1},
+
+		{"1-alpha", "1-beta", -1},
+		{"1-beta", "1-RC", -1},
+		{"1-RC", "1", -1},
+		{"1", "1-patch", -1},
+		{"1-patch2", "1-patch11", -1},
+
+		// taken from https://semver.org/#spec-item-11
+		{"1.0.0-alpha", "1.0.0-alpha.1", -1},
+		{"1.0.0-alpha.1", "1.0.0-beta", -1},
+		{"1.0.0-beta", "1.0.0-beta.2", -1},
+		{"1.0.0-beta.2", "1.0.0-beta.11", -1},
+		{"1.0.0-beta.11", "1.0.0-rc.1", -1},
+		{"1.0.0-rc.1", "1.0.0", -1},
+
+		// taken from composer/semver ComparatorTest::compareProvider()
+		// https://github.com/composer/semver/blob/43f8029888dd52d01df0fc6d0d98d4024ab5bef1/tests/ComparatorTest.php#L213
+		{"1.25.0-beta2.1", "1.25.0-b.3", -1},
+		{"1.25.0-b2.1", "1.25.0beta.3", -1},
+		{"1.25.0-b-2.1", "1.25.0-rc", -1},
+	}
+	for _, tt := range tests {
+		t.Run(tt.v+"<=>"+tt.w, func(t *testing.T) {
+			v, _ := NewVersion(tt.v)
+			w, _ := NewVersion(tt.w)
+
+			if got := v.Compare(w); got != tt.want {
+				t.Errorf("%q.Compare(%q) = %v, want %v", tt.v, tt.w, got, tt.want)
+			}
+
+			if got := w.Compare(v); got != -1*tt.want {
+				t.Errorf("%q.Compare(%q) = %v, want %v", tt.w, tt.v, got, tt.want)
 			}
 		})
 	}

@@ -153,3 +153,98 @@ func (v Version) String() string {
 func (v Version) Original() string {
 	return v.original
 }
+
+// Compare returns an integer comparing two versions.
+//
+// Pre-release versions are compared according to semantic version precedence.
+// The result will be 0 when v == w, -1 when v < w, or +1 when v > w.
+func (v Version) Compare(w Version) int {
+	switch {
+	case v.String() == w.String():
+		return 0
+	case v.major > w.major:
+		return +1
+	case v.major < w.major:
+		return -1
+	case v.minor > w.minor:
+		return +1
+	case v.minor < w.minor:
+		return -1
+	case v.patch > w.patch:
+		return +1
+	case v.patch < w.patch:
+		return -1
+	case v.tweak > w.tweak:
+		return +1
+	case v.tweak < w.tweak:
+		return -1
+	case v.modifier > w.modifier:
+		return +1
+	case v.modifier < w.modifier:
+		return -1
+	case v.preRelease != "" && w.preRelease == "":
+		return +1
+	case v.preRelease == "" && w.preRelease != "":
+		return -1
+	}
+
+	vPres := strings.Split(v.preRelease, ".")
+	wPres := strings.Split(w.preRelease, ".")
+
+	// comparing each dot separated identifier from left to right
+	for i := 0; i < len(vPres); i++ {
+		vi := vPres[i]
+
+		// a larger set of pre-release fields has a higher precedence than a smaller set
+		if i >= len(wPres) {
+			return +1
+		}
+		wi := wPres[i]
+
+		if vi == wi {
+			continue
+		}
+
+		vid := isDigits(vi)
+		wid := isDigits(wi)
+
+		// identifiers consisting of only digits are compared numerically
+		if vid && wid {
+			vii, _ := strconv.ParseUint(vi, 10, 64)
+			wii, _ := strconv.ParseUint(wi, 10, 64)
+
+			if vii > wii {
+				return 1
+			}
+			return -1
+		}
+
+		// TODO: Find out whether composer/semver supports this
+		//
+		// identifiers with letters or hyphens are compared lexically in ASCII sort order
+		if !vid && !wid {
+			if vi > wi {
+				return +1
+			}
+			return -1
+		}
+
+		// numeric identifiers always have lower precedence than non-numeric identifiers
+		if !vid && wid {
+			return +1
+		}
+		return -1
+	}
+
+	// a larger set of pre-release fields has a higher precedence than a smaller set
+	return -1
+}
+
+func isDigits(s string) bool {
+	for _, r := range s {
+		if r < '0' || r > '9' {
+			return false
+		}
+	}
+	return true
+}
