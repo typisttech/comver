@@ -11,7 +11,7 @@ const (
 	ErrUnexpectedModifier stringError = "unexpected modifier"
 )
 
-func newStability(s string) (modifier, error) {
+func newModifier(s string) (modifier, error) {
 	switch s {
 	case "":
 		return modifierStable, nil
@@ -24,7 +24,7 @@ func newStability(s string) (modifier, error) {
 	case "alpha", "a":
 		return modifierAlpha, nil
 	}
-	return 0, ErrUnexpectedModifier
+	return modifierStable, ErrUnexpectedModifier
 }
 
 func (s modifier) String() string {

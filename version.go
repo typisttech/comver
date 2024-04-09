@@ -112,7 +112,7 @@ func NewVersion(v string) (Version, error) {
 		return Version{}, &ParseError{original, err}
 	}
 
-	if cv.modifier, err = newStability(match[5]); err != nil {
+	if cv.modifier, err = newModifier(match[5]); err != nil {
 		return Version{}, &ParseError{original, err}
 	}
 
