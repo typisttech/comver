@@ -193,14 +193,12 @@ func (v Version) Compare(w Version) int {
 
 	// comparing each dot separated identifier from left to right
 	for i := 0; i < len(vPres); i++ {
-		vi := vPres[i]
-
 		// a larger set of pre-release fields has a higher precedence than a smaller set
 		if i >= len(wPres) {
 			return +1
 		}
-		wi := wPres[i]
 
+		vi, wi := vPres[i], wPres[i]
 		if vi == wi {
 			continue
 		}
@@ -214,7 +212,7 @@ func (v Version) Compare(w Version) int {
 			wii, _ := strconv.ParseUint(wi, 10, 64)
 
 			if vii > wii {
-				return 1
+				return +1
 			}
 			return -1
 		}
@@ -229,6 +227,8 @@ func (v Version) Compare(w Version) int {
 			return -1
 		}
 
+		// TODO: Find out whether composer/semver supports this
+		//
 		// numeric identifiers always have lower precedence than non-numeric identifiers
 		if !vid && wid {
 			return +1
