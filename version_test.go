@@ -167,7 +167,6 @@ func TestNewVersion_ParseError(t *testing.T) {
 			t.Parallel()
 
 			got, err := NewVersion(tt.v)
-
 			if err == nil {
 				t.Fatalf("NewVersion() got = %s error = %v, wantErr %v", got, err, tt.wantErr)
 			}
@@ -229,8 +228,16 @@ func TestVersion_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.v+"<=>"+tt.w, func(t *testing.T) {
-			v, _ := NewVersion(tt.v)
-			w, _ := NewVersion(tt.w)
+			t.Parallel()
+
+			v, err := NewVersion(tt.v)
+			if err != nil {
+				t.Fatalf("NewVersion(%q) error = %v, wantErr %v", tt.v, err, nil)
+			}
+			w, err := NewVersion(tt.w)
+			if err != nil {
+				t.Fatalf("NewVersion(%q) error = %v, wantErr %v", tt.w, err, nil)
+			}
 
 			if got := v.Compare(w); got != tt.want {
 				t.Errorf("%q.Compare(%q) = %v, want %v", tt.v, tt.w, got, tt.want)
@@ -238,6 +245,136 @@ func TestVersion_Compare(t *testing.T) {
 
 			if got := w.Compare(v); got != -1*tt.want {
 				t.Errorf("%q.Compare(%q) = %v, want %v", tt.w, tt.v, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestVersion_String(t *testing.T) {
+	tests := []struct {
+		v    string
+		want string
+	}{
+		{"1", "1.0.0.0"},
+		{"1.0", "1.0.0.0"},
+		{"1.0.0", "1.0.0.0"},
+		{"1.0.0.0", "1.0.0.0"},
+		{"1.2", "1.2.0.0"},
+		{"1.2.0", "1.2.0.0"},
+		{"1.2.0.0", "1.2.0.0"},
+		{"1.2.3", "1.2.3.0"},
+		{"1.2.3.0", "1.2.3.0"},
+		{"1.2.3.4", "1.2.3.4"},
+
+		{"1-beta", "1.0.0.0-beta"},
+		{"1.0-beta", "1.0.0.0-beta"},
+		{"1.0.0-beta", "1.0.0.0-beta"},
+		{"1.0.0.0-beta", "1.0.0.0-beta"},
+		{"1.2-beta", "1.2.0.0-beta"},
+		{"1.2.0-beta", "1.2.0.0-beta"},
+		{"1.2.0.0-beta", "1.2.0.0-beta"},
+		{"1.2.3-beta", "1.2.3.0-beta"},
+		{"1.2.3.0-beta", "1.2.3.0-beta"},
+		{"1.2.3.4-beta", "1.2.3.4-beta"},
+
+		{"1-beta0", "1.0.0.0-beta0"},
+		{"1.0-beta0", "1.0.0.0-beta0"},
+		{"1.0.0-beta0", "1.0.0.0-beta0"},
+		{"1.0.0.0-beta0", "1.0.0.0-beta0"},
+		{"1.2-beta0", "1.2.0.0-beta0"},
+		{"1.2.0-beta0", "1.2.0.0-beta0"},
+		{"1.2.0.0-beta0", "1.2.0.0-beta0"},
+		{"1.2.3-beta0", "1.2.3.0-beta0"},
+		{"1.2.3.0-beta0", "1.2.3.0-beta0"},
+		{"1.2.3.4-beta0", "1.2.3.4-beta0"},
+
+		{"1-beta999", "1.0.0.0-beta999"},
+		{"1.0-beta999", "1.0.0.0-beta999"},
+		{"1.0.0-beta999", "1.0.0.0-beta999"},
+		{"1.0.0.0-beta999", "1.0.0.0-beta999"},
+		{"1.2-beta999", "1.2.0.0-beta999"},
+		{"1.2.0-beta999", "1.2.0.0-beta999"},
+		{"1.2.0.0-beta999", "1.2.0.0-beta999"},
+		{"1.2.3-beta999", "1.2.3.0-beta999"},
+		{"1.2.3.0-beta999", "1.2.3.0-beta999"},
+		{"1.2.3.4-beta999", "1.2.3.4-beta999"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.v, func(t *testing.T) {
+			t.Parallel()
+
+			v, err := NewVersion(tt.v)
+			if err != nil {
+				t.Fatalf("NewVersion(%q) error = %v, wantErr %v", tt.v, err, nil)
+			}
+
+			if got := v.String(); got != tt.want {
+				t.Errorf("%q.String() = %v, want %v", tt.v, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestVersion_Short(t *testing.T) {
+	tests := []struct {
+		v    string
+		want string
+	}{
+		{"1", "1"},
+		{"1.0", "1"},
+		{"1.0.0", "1"},
+		{"1.0.0.0", "1"},
+		{"1.2", "1.2"},
+		{"1.2.0", "1.2"},
+		{"1.2.0.0", "1.2"},
+		{"1.2.3", "1.2.3"},
+		{"1.2.3.0", "1.2.3"},
+		{"1.2.3.4", "1.2.3.4"},
+
+		{"1-beta", "1-beta"},
+		{"1.0-beta", "1-beta"},
+		{"1.0.0-beta", "1-beta"},
+		{"1.0.0.0-beta", "1-beta"},
+		{"1.2-beta", "1.2-beta"},
+		{"1.2.0-beta", "1.2-beta"},
+		{"1.2.0.0-beta", "1.2-beta"},
+		{"1.2.3-beta", "1.2.3-beta"},
+		{"1.2.3.0-beta", "1.2.3-beta"},
+		{"1.2.3.4-beta", "1.2.3.4-beta"},
+
+		{"1-beta0", "1-beta0"},
+		{"1.0-beta0", "1-beta0"},
+		{"1.0.0-beta0", "1-beta0"},
+		{"1.0.0.0-beta0", "1-beta0"},
+		{"1.2-beta0", "1.2-beta0"},
+		{"1.2.0-beta0", "1.2-beta0"},
+		{"1.2.0.0-beta0", "1.2-beta0"},
+		{"1.2.3-beta0", "1.2.3-beta0"},
+		{"1.2.3.0-beta0", "1.2.3-beta0"},
+		{"1.2.3.4-beta0", "1.2.3.4-beta0"},
+
+		{"1-beta999", "1-beta999"},
+		{"1.0-beta999", "1-beta999"},
+		{"1.0.0-beta999", "1-beta999"},
+		{"1.0.0.0-beta999", "1-beta999"},
+		{"1.2-beta999", "1.2-beta999"},
+		{"1.2.0-beta999", "1.2-beta999"},
+		{"1.2.0.0-beta999", "1.2-beta999"},
+		{"1.2.3-beta999", "1.2.3-beta999"},
+		{"1.2.3.0-beta999", "1.2.3-beta999"},
+		{"1.2.3.4-beta999", "1.2.3.4-beta999"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.v, func(t *testing.T) {
+			t.Parallel()
+
+			v, err := NewVersion(tt.v)
+			if err != nil {
+				t.Fatalf("NewVersion(%q) error = %v, wantErr %v", tt.v, err, nil)
+			}
+
+			if got := v.Short(); got != tt.want {
+				t.Errorf("%q.Short() = %v, want %v", tt.v, got, tt.want)
 			}
 		})
 	}

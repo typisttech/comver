@@ -150,6 +150,20 @@ func (v Version) String() string {
 	return s
 }
 
+func (v Version) Short() string {
+	s := fmt.Sprintf("%d.%d.%d.%d", v.major, v.minor, v.patch, v.tweak)
+
+	s = strings.TrimSuffix(s, ".0")
+	s = strings.TrimSuffix(s, ".0")
+	s = strings.TrimSuffix(s, ".0")
+
+	if v.modifier != modifierStable {
+		s += "-" + v.modifier.String() + v.preRelease
+	}
+
+	return s
+}
+
 func (v Version) Original() string {
 	return v.original
 }
