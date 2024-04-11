@@ -171,7 +171,7 @@ func (v Version) Original() string {
 // Compare returns an integer comparing two versions.
 //
 // Pre-release versions are compared according to semantic version precedence.
-// The result will be 0 when v == w, -1 when v < w, or +1 when v > w.
+// The result is 0 when v == w, -1 when v < w, or +1 when v > w.
 func (v Version) Compare(w Version) int {
 	switch {
 	case v.String() == w.String():
