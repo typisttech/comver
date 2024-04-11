@@ -76,10 +76,10 @@ func TestNewVersion(t *testing.T) {
 				t.Fatalf("NewVersion() error = %v, wantErr %v", err, nil)
 			}
 			if gotString := got.String(); gotString != tt.want {
-				t.Errorf("NewVersion().String() got = %v, want %v", gotString, tt.want)
+				t.Errorf("NewVersion().String() got = %q, want %v", gotString, tt.want)
 			}
 			if gotOriginal := got.original; gotOriginal != tt.v {
-				t.Errorf("NewVersion().original got = %v, want %v", gotOriginal, tt.v)
+				t.Errorf("NewVersion().original got = %q, want %v", gotOriginal, tt.v)
 			}
 		})
 	}
@@ -309,7 +309,7 @@ func TestVersion_String(t *testing.T) {
 			}
 
 			if got := v.String(); got != tt.want {
-				t.Errorf("%q.String() = %v, want %v", tt.v, got, tt.want)
+				t.Errorf("%q.String() = %q, want %q", tt.v, got, tt.want)
 			}
 		})
 	}
