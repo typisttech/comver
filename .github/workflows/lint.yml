@@ -33,7 +33,7 @@ jobs:
         with:
           go-version-file: 'go.mod'
       - run: go version
-      - uses: goreleaser/goreleaser-action@v5
+      - uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
           version: latest
