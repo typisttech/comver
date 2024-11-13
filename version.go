@@ -17,20 +17,22 @@ const (
 	ErrDateVersionWithFourBits stringError = "date versions with 4 bits"
 )
 
-var classicalVersioningRegexp = regexp.MustCompile("^" + classicalVersioningRegex + modifierRegex + "$")
-var dateOnlyVersioningRegexp = regexp.MustCompile("^" + dateOnlyVersioningRegex + modifierRegex + "$")
+var (
+	classicalVersioningRegexp = regexp.MustCompile("^" + classicalVersioningRegex + modifierRegex + "$")
+	dateOnlyVersioningRegexp  = regexp.MustCompile("^" + dateOnlyVersioningRegex + modifierRegex + "$")
+)
 
 // Version represents a single composer version.
 type Version struct {
-	major, minor, patch, tweak uint64
-	modifier                   modifier
-	preRelease                 string
-	original                   string
+	major, minor, patch, tweak uint64   `exhaustruct:"optional"`
+	modifier                   modifier `exhaustruct:"optional"`
+	preRelease                 string   `exhaustruct:"optional"`
+	original                   string   `exhaustruct:"optional"`
 }
 
 // NewVersion parses a given version string and returns an instance of [Version] or
 // an error if unable to parse the version.
-func NewVersion(v string) (Version, error) {
+func NewVersion(v string) (Version, error) { //nolint:cyclop,funlen
 	original := v
 
 	// normalize to lowercase for easier pattern matching
@@ -172,7 +174,7 @@ func (v Version) Original() string {
 //
 // Pre-release versions are compared according to semantic version precedence.
 // The result is 0 when v == w, -1 when v < w, or +1 when v > w.
-func (v Version) Compare(w Version) int {
+func (v Version) Compare(w Version) int { ////nolint:cyclop,funlen
 	switch {
 	case v.String() == w.String():
 		return 0
@@ -231,6 +233,7 @@ func (v Version) Compare(w Version) int {
 			return -1
 		}
 
+		//nolint:godox
 		// TODO: Find out whether composer/semver supports this
 		//
 		// identifiers with letters or hyphens are compared lexically in ASCII sort order
@@ -241,6 +244,7 @@ func (v Version) Compare(w Version) int {
 			return -1
 		}
 
+		//nolint:godox
 		// TODO: Find out whether composer/semver supports this
 		//
 		// numeric identifiers always have lower precedence than non-numeric identifiers

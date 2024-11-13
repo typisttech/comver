@@ -7,7 +7,7 @@ import (
 	"github.com/typisttech/comver"
 )
 
-var invalidWordFenceVersions = []string{
+var invalidWordFenceVersions = []string{ //nolint:gochecknoglobals
 	"*",
 	".47.1",
 	".48.9",
@@ -60,6 +60,8 @@ var invalidWordFenceVersions = []string{
 
 //go:generate go run gen_wordfence.go gen.go
 func TestNewVersion_Wordfence(t *testing.T) {
+	t.Parallel()
+
 	for _, v := range wordFenceVersions {
 		t.Run(v, func(t *testing.T) {
 			t.Parallel()

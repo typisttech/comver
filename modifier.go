@@ -37,6 +37,9 @@ func (s modifier) String() string {
 		return "beta"
 	case modifierAlpha:
 		return "alpha"
+	case modifierStable:
+		return ""
+	default:
+		return ""
 	}
-	return ""
 }

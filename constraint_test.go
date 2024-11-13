@@ -3,6 +3,8 @@ package comver
 import "testing"
 
 func Test_constraint_Check(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name       string
 		constraint *constraint

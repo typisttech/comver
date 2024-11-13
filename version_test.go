@@ -6,6 +6,8 @@ import (
 )
 
 func TestNewVersion(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		v    string
@@ -86,6 +88,8 @@ func TestNewVersion(t *testing.T) {
 }
 
 func TestNewVersion_ParseError(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		v       string
@@ -188,6 +192,8 @@ func TestNewVersion_ParseError(t *testing.T) {
 }
 
 func TestVersion_Compare(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		v    string
 		w    string
@@ -251,6 +257,8 @@ func TestVersion_Compare(t *testing.T) {
 }
 
 func TestVersion_String(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		v    string
 		want string
@@ -316,6 +324,8 @@ func TestVersion_String(t *testing.T) {
 }
 
 func TestVersion_Short(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		v    string
 		want string

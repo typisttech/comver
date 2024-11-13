@@ -1,0 +1,34 @@
+linters:
+  presets:
+    - bugs
+    - comment
+    - complexity
+    - error
+    - format
+    - import
+    - metalinter
+    - module
+    - performance
+    - sql
+    - style
+    - test
+    - unused
+
+  disable:
+    - dupl
+    - depguard
+    - err113
+    - testpackage
+    - varnamelen
+    - wrapcheck
+    - wsl
+    - nlreturn
+    - revive
+
+issues:
+  exclude-rules:
+    - path: '(.+)_test\.go'
+      linters:
+        - dupl
+        - lll
+        - funlen

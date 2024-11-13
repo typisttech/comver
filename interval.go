@@ -11,7 +11,7 @@ const (
 //
 // If either c1 or c2 is nil, it represents a boundless range.
 // If both c1 and c2 are nil, it matches all versions (wildcard).
-func NewInterval(c1, c2 *constraint) (interval, error) {
+func NewInterval(c1, c2 *constraint) (interval, error) { //nolint:cyclop
 	cmp := c1.compare(c2)
 	// ensure c1 is the lower than c2
 	if cmp > 0 {
@@ -87,28 +87,32 @@ func (i interval) floorless() bool {
 	return i.floor() == nil
 }
 
-func (i interval) floor() *constraint {
-	switch {
-	case i.wildcard():
+func (i interval) floor() *constraint { //nolint:cyclop
+	if i.wildcard() {
 		return nil
-	// i[0] only
-	case i[0] != nil && i[1] == nil && i[0].ceillingless():
-		return i[0]
-	case i[0] != nil && i[1] == nil && !i[0].ceillingless():
+	}
+
+	if i[0] != nil && i[1] == nil {
+		if i[0].lowerbounded() {
+			return i[0]
+		}
 		return nil
-	// i[1] only
-	case i[0] == nil && i[1] != nil && i[1].ceillingless():
-		return i[1]
-	case i[0] == nil && i[1] != nil && !i[1].ceillingless():
+	}
+
+	if i[0] == nil && i[1] != nil {
+		if i[1].lowerbounded() {
+			return i[1]
+		}
 		return nil
 	}
 
 	// both i[0] and i[1] are not nil
-	if !i[0].ceillingless() && !i[1].ceillingless() {
+
+	if !i[0].lowerbounded() && !i[1].lowerbounded() {
 		return nil
 	}
 
-	if i[0].ceillingless() && i[1].ceillingless() {
+	if i[0].lowerbounded() && i[1].lowerbounded() {
 		cmp := i[0].compare(i[1])
 		switch {
 		case cmp < 0:
@@ -121,7 +125,7 @@ func (i interval) floor() *constraint {
 	}
 
 	// exactly one of them is lower bounded
-	if i[0].ceillingless() {
+	if i[0].lowerbounded() {
 		return i[0]
 	}
 	return i[1]
@@ -131,29 +135,32 @@ func (i interval) ceilingless() bool {
 	return i.ceiling() == nil
 }
 
-func (i interval) ceiling() *constraint {
-	switch {
-	case i.wildcard():
+func (i interval) ceiling() *constraint { //nolint:cyclop
+	if i.wildcard() {
 		return nil
-	// i[0] only
-	case i[0] != nil && i[1] == nil && i[0].floorless():
-		return i[0]
-	case i[0] != nil && i[1] == nil && !i[0].floorless():
+	}
+
+	if i[0] != nil && i[1] == nil {
+		if i[0].upperbounded() {
+			return i[0]
+		}
 		return nil
-	// i[1] only
-	case i[0] == nil && i[1] != nil && i[1].floorless():
-		return i[1]
-	case i[0] == nil && i[1] != nil && !i[1].floorless():
+	}
+
+	if i[0] == nil && i[1] != nil {
+		if i[1].upperbounded() {
+			return i[1]
+		}
 		return nil
 	}
 
 	// both i[0] and i[1] are not nil
 
-	if !i[0].floorless() && !i[1].floorless() {
+	if !i[0].upperbounded() && !i[1].upperbounded() {
 		return nil
 	}
 
-	if i[0].floorless() && i[1].floorless() {
+	if i[0].upperbounded() && i[1].upperbounded() {
 		cmp := i[0].compare(i[1])
 		switch {
 		case cmp < 0:
@@ -166,7 +173,7 @@ func (i interval) ceiling() *constraint {
 	}
 
 	// exactly one of them is upper bounded
-	if i[0].floorless() {
+	if i[0].upperbounded() {
 		return i[0]
 	}
 	return i[1]
@@ -181,7 +188,7 @@ func (i interval) exactVersionOnly() bool {
 		return false
 	}
 
-	return (i[0].ceillingless() && i[1].floorless()) || (i[0].floorless() && i[1].ceillingless())
+	return (i[0].lowerbounded() && i[1].upperbounded()) || (i[0].upperbounded() && i[1].lowerbounded())
 }
 
 func (i interval) compare(j interval) int {

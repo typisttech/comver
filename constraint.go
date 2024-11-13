@@ -72,11 +72,11 @@ func NewGreaterThanOrEqualToConstraint(v Version) *constraint {
 	}
 }
 
-func (c *constraint) ceillingless() bool {
+func (c *constraint) lowerbounded() bool {
 	return c.op == greaterThan || c.op == greaterThanOrEqualTo
 }
 
-func (c *constraint) floorless() bool {
+func (c *constraint) upperbounded() bool {
 	return c.op == lessThanOrEqualTo || c.op == lessThan
 }
 
@@ -113,8 +113,8 @@ func (c *constraint) String() string {
 // The comparison is done by comparing the version first, then the operator.
 //   - Versions are compared according to their semantic precedence
 //   - Operators are compared in the following order (lowest to highest): >=, >, <, <=
-//   - nil is considered to be the higher than floorless constraints
-//   - nil is considered to be the lower than ceillingless constraints
+//   - nil is considered to be the higher than upperbounded constraints
+//   - nil is considered to be the lower than lowerbounded constraints
 //
 // The result is 0 when c == d, -1 when c < d, or +1 when c > d.
 func (c *constraint) compare(d *constraint) int {
@@ -122,12 +122,12 @@ func (c *constraint) compare(d *constraint) int {
 	case c == nil && d == nil:
 		return 0
 	case c == nil:
-		if d.ceillingless() {
+		if d.lowerbounded() {
 			return -1
 		}
 		return +1
 	case d == nil:
-		if c.ceillingless() {
+		if c.lowerbounded() {
 			return +1
 		}
 		return -1

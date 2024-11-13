@@ -7,162 +7,199 @@ import (
 	"testing"
 )
 
-func TestNewInterval(t *testing.T) {
-	tests := []struct {
+func newIntervalTestCases() []struct {
+	c1      *constraint
+	c2      *constraint
+	want    interval
+	wantErr bool
+} {
+	return []struct {
 		c1      *constraint
 		c2      *constraint
 		want    interval
 		wantErr bool
 	}{
 		{
-			c1:   nil,
-			c2:   nil,
-			want: interval{},
+			c1:      nil,
+			c2:      nil,
+			want:    interval{},
+			wantErr: false,
 		},
 		// With single nil.
 		{
-			c1:   &constraint{Version{major: 9}, lessThanOrEqualTo},
-			c2:   nil,
-			want: interval{&constraint{Version{major: 9}, lessThanOrEqualTo}},
+			c1:      &constraint{Version{major: 9}, lessThanOrEqualTo},
+			c2:      nil,
+			want:    interval{&constraint{Version{major: 9}, lessThanOrEqualTo}},
+			wantErr: false,
 		},
 		{
-			c1:   &constraint{Version{major: 9}, lessThan},
-			c2:   nil,
-			want: interval{&constraint{Version{major: 9}, lessThan}},
+			c1:      &constraint{Version{major: 9}, lessThan},
+			c2:      nil,
+			want:    interval{&constraint{Version{major: 9}, lessThan}},
+			wantErr: false,
 		},
 		{
-			c1:   &constraint{Version{major: 9}, greaterThan},
-			c2:   nil,
-			want: interval{&constraint{Version{major: 9}, greaterThan}},
+			c1:      &constraint{Version{major: 9}, greaterThan},
+			c2:      nil,
+			want:    interval{&constraint{Version{major: 9}, greaterThan}},
+			wantErr: false,
 		},
 		{
-			c1:   &constraint{Version{major: 9}, greaterThanOrEqualTo},
-			c2:   nil,
-			want: interval{&constraint{Version{major: 9}, greaterThanOrEqualTo}},
+			c1:      &constraint{Version{major: 9}, greaterThanOrEqualTo},
+			c2:      nil,
+			want:    interval{&constraint{Version{major: 9}, greaterThanOrEqualTo}},
+			wantErr: false,
 		},
 
 		// Same constraint.
 		{
-			c1:   &constraint{Version{major: 8}, lessThanOrEqualTo},
-			c2:   &constraint{Version{major: 8}, lessThanOrEqualTo},
-			want: interval{&constraint{Version{major: 8}, lessThanOrEqualTo}},
+			c1:      &constraint{Version{major: 8}, lessThanOrEqualTo},
+			c2:      &constraint{Version{major: 8}, lessThanOrEqualTo},
+			want:    interval{&constraint{Version{major: 8}, lessThanOrEqualTo}},
+			wantErr: false,
 		},
 		{
-			c1:   &constraint{Version{major: 8}, lessThan},
-			c2:   &constraint{Version{major: 8}, lessThan},
-			want: interval{&constraint{Version{major: 8}, lessThan}},
+			c1:      &constraint{Version{major: 8}, lessThan},
+			c2:      &constraint{Version{major: 8}, lessThan},
+			want:    interval{&constraint{Version{major: 8}, lessThan}},
+			wantErr: false,
 		},
 		{
-			c1:   &constraint{Version{major: 8}, greaterThan},
-			c2:   &constraint{Version{major: 8}, greaterThan},
-			want: interval{&constraint{Version{major: 8}, greaterThan}},
+			c1:      &constraint{Version{major: 8}, greaterThan},
+			c2:      &constraint{Version{major: 8}, greaterThan},
+			want:    interval{&constraint{Version{major: 8}, greaterThan}},
+			wantErr: false,
 		},
 		{
-			c1:   &constraint{Version{major: 8}, greaterThanOrEqualTo},
-			c2:   &constraint{Version{major: 8}, greaterThanOrEqualTo},
-			want: interval{&constraint{Version{major: 8}, greaterThanOrEqualTo}},
+			c1:      &constraint{Version{major: 8}, greaterThanOrEqualTo},
+			c2:      &constraint{Version{major: 8}, greaterThanOrEqualTo},
+			want:    interval{&constraint{Version{major: 8}, greaterThanOrEqualTo}},
+			wantErr: false,
 		},
 
 		// Same direction. Different versions. Same op.
 		{
-			c1:   &constraint{Version{major: 7}, lessThanOrEqualTo},
-			c2:   &constraint{Version{major: 6}, lessThanOrEqualTo},
-			want: interval{&constraint{Version{major: 6}, lessThanOrEqualTo}},
+			c1:      &constraint{Version{major: 7}, lessThanOrEqualTo},
+			c2:      &constraint{Version{major: 6}, lessThanOrEqualTo},
+			want:    interval{&constraint{Version{major: 6}, lessThanOrEqualTo}},
+			wantErr: false,
 		},
 		{
-			c1:   &constraint{Version{major: 7}, lessThan},
-			c2:   &constraint{Version{major: 6}, lessThan},
-			want: interval{&constraint{Version{major: 6}, lessThan}},
+			c1:      &constraint{Version{major: 7}, lessThan},
+			c2:      &constraint{Version{major: 6}, lessThan},
+			want:    interval{&constraint{Version{major: 6}, lessThan}},
+			wantErr: false,
 		},
 		{
-			c1:   &constraint{Version{major: 7}, greaterThan},
-			c2:   &constraint{Version{major: 6}, greaterThan},
-			want: interval{&constraint{Version{major: 7}, greaterThan}},
+			c1:      &constraint{Version{major: 7}, greaterThan},
+			c2:      &constraint{Version{major: 6}, greaterThan},
+			want:    interval{&constraint{Version{major: 7}, greaterThan}},
+			wantErr: false,
 		},
 		{
-			c1:   &constraint{Version{major: 7}, greaterThanOrEqualTo},
-			c2:   &constraint{Version{major: 6}, greaterThanOrEqualTo},
-			want: interval{&constraint{Version{major: 7}, greaterThanOrEqualTo}},
+			c1:      &constraint{Version{major: 7}, greaterThanOrEqualTo},
+			c2:      &constraint{Version{major: 6}, greaterThanOrEqualTo},
+			want:    interval{&constraint{Version{major: 7}, greaterThanOrEqualTo}},
+			wantErr: false,
 		},
 
 		// Same direction. Same version. Different ops.
 		{
-			c1:   &constraint{Version{major: 5}, lessThanOrEqualTo},
-			c2:   &constraint{Version{major: 5}, lessThan},
-			want: interval{&constraint{Version{major: 5}, lessThan}},
+			c1:      &constraint{Version{major: 5}, lessThanOrEqualTo},
+			c2:      &constraint{Version{major: 5}, lessThan},
+			want:    interval{&constraint{Version{major: 5}, lessThan}},
+			wantErr: false,
 		},
 		{
-			c1:   &constraint{Version{major: 5}, greaterThan},
-			c2:   &constraint{Version{major: 5}, greaterThanOrEqualTo},
-			want: interval{&constraint{Version{major: 5}, greaterThan}},
+			c1:      &constraint{Version{major: 5}, greaterThan},
+			c2:      &constraint{Version{major: 5}, greaterThanOrEqualTo},
+			want:    interval{&constraint{Version{major: 5}, greaterThan}},
+			wantErr: false,
 		},
 
 		// Different directions. Same version. Different ops.
 		{
 			c1:      &constraint{Version{major: 5}, lessThanOrEqualTo},
 			c2:      &constraint{Version{major: 5}, greaterThan},
+			want:    interval{},
 			wantErr: true,
 		},
 		{
 			c1:      &constraint{Version{major: 5}, lessThan},
 			c2:      &constraint{Version{major: 5}, greaterThan},
+			want:    interval{},
 			wantErr: true,
 		},
 		{
 			c1:      &constraint{Version{major: 5}, lessThan},
 			c2:      &constraint{Version{major: 5}, greaterThanOrEqualTo},
+			want:    interval{},
 			wantErr: true,
 		},
 		{
-			c1:   &constraint{Version{major: 5}, lessThanOrEqualTo},
-			c2:   &constraint{Version{major: 5}, greaterThanOrEqualTo},
-			want: interval{&constraint{Version{major: 5}, greaterThanOrEqualTo}, &constraint{Version{major: 5}, lessThanOrEqualTo}},
+			c1:      &constraint{Version{major: 5}, lessThanOrEqualTo},
+			c2:      &constraint{Version{major: 5}, greaterThanOrEqualTo},
+			want:    interval{&constraint{Version{major: 5}, greaterThanOrEqualTo}, &constraint{Version{major: 5}, lessThanOrEqualTo}},
+			wantErr: false,
 		},
 
 		// Different directions. Different versions. Different ops.
 		{
-			c1:   &constraint{Version{major: 4}, lessThanOrEqualTo},
-			c2:   &constraint{Version{major: 3}, greaterThan},
-			want: interval{&constraint{Version{major: 3}, greaterThan}, &constraint{Version{major: 4}, lessThanOrEqualTo}},
+			c1:      &constraint{Version{major: 4}, lessThanOrEqualTo},
+			c2:      &constraint{Version{major: 3}, greaterThan},
+			want:    interval{&constraint{Version{major: 3}, greaterThan}, &constraint{Version{major: 4}, lessThanOrEqualTo}},
+			wantErr: false,
 		},
 		{
-			c1:   &constraint{Version{major: 4}, lessThanOrEqualTo},
-			c2:   &constraint{Version{major: 3}, greaterThanOrEqualTo},
-			want: interval{&constraint{Version{major: 3}, greaterThanOrEqualTo}, &constraint{Version{major: 4}, lessThanOrEqualTo}},
+			c1:      &constraint{Version{major: 4}, lessThanOrEqualTo},
+			c2:      &constraint{Version{major: 3}, greaterThanOrEqualTo},
+			want:    interval{&constraint{Version{major: 3}, greaterThanOrEqualTo}, &constraint{Version{major: 4}, lessThanOrEqualTo}},
+			wantErr: false,
 		},
 		{
-			c1:   &constraint{Version{major: 4}, lessThan},
-			c2:   &constraint{Version{major: 3}, greaterThan},
-			want: interval{&constraint{Version{major: 3}, greaterThan}, &constraint{Version{major: 4}, lessThan}},
+			c1:      &constraint{Version{major: 4}, lessThan},
+			c2:      &constraint{Version{major: 3}, greaterThan},
+			want:    interval{&constraint{Version{major: 3}, greaterThan}, &constraint{Version{major: 4}, lessThan}},
+			wantErr: false,
 		},
 		{
-			c1:   &constraint{Version{major: 4}, lessThan},
-			c2:   &constraint{Version{major: 3}, greaterThanOrEqualTo},
-			want: interval{&constraint{Version{major: 3}, greaterThanOrEqualTo}, &constraint{Version{major: 4}, lessThan}},
+			c1:      &constraint{Version{major: 4}, lessThan},
+			c2:      &constraint{Version{major: 3}, greaterThanOrEqualTo},
+			want:    interval{&constraint{Version{major: 3}, greaterThanOrEqualTo}, &constraint{Version{major: 4}, lessThan}},
+			wantErr: false,
 		},
 		{
 			c1:      &constraint{Version{major: 1}, lessThanOrEqualTo},
 			c2:      &constraint{Version{major: 2}, greaterThan},
+			want:    interval{},
 			wantErr: true,
 		},
 		{
 			c1:      &constraint{Version{major: 1}, lessThanOrEqualTo},
 			c2:      &constraint{Version{major: 2}, greaterThanOrEqualTo},
+			want:    interval{},
 			wantErr: true,
 		},
 		{
 			c1:      &constraint{Version{major: 1}, lessThan},
 			c2:      &constraint{Version{major: 2}, greaterThan},
+			want:    interval{},
 			wantErr: true,
 		},
 		{
 			c1:      &constraint{Version{major: 1}, lessThan},
 			c2:      &constraint{Version{major: 2}, greaterThanOrEqualTo},
+			want:    interval{},
 			wantErr: true,
 		},
 	}
-	for _, tt := range tests {
-		t.Run(fmt.Sprintf("%s %s", tt.c1, tt.c2), func(t *testing.T) {
+}
+
+func TestNewInterval(t *testing.T) {
+	t.Parallel()
+
+	for _, tt := range newIntervalTestCases() {
+		t.Run(fmt.Sprintf("%s_%s_reversed", tt.c1, tt.c2), func(t *testing.T) {
 			t.Parallel()
 
 			got, err := NewInterval(tt.c1, tt.c2)
@@ -176,8 +213,14 @@ func TestNewInterval(t *testing.T) {
 				t.Errorf("NewInterval(%q, %q) = %v, want %v", tt.c1, tt.c2, got, tt.want)
 			}
 		})
+	}
+}
 
-		t.Run(fmt.Sprintf("%s %s", tt.c2, tt.c1), func(t *testing.T) {
+func TestNewInterval_reversed(t *testing.T) {
+	t.Parallel()
+
+	for _, tt := range newIntervalTestCases() {
+		t.Run(fmt.Sprintf("%s_%s_reversed", tt.c2, tt.c1), func(t *testing.T) {
 			t.Parallel()
 
 			got, err := NewInterval(tt.c2, tt.c1)
@@ -194,7 +237,9 @@ func TestNewInterval(t *testing.T) {
 	}
 }
 
-func Test_interval_Check(t *testing.T) {
+func Test_interval_Check(t *testing.T) { //nolint:maintidx
+	t.Parallel()
+
 	tests := []struct {
 		i    interval
 		v    Version
@@ -462,6 +507,8 @@ func Test_interval_Check(t *testing.T) {
 }
 
 func Test_interval_String(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		i    interval
 		want string

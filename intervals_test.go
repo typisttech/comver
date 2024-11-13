@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func compactTestCases() []struct {
+func compactTestCases() []struct { //nolint:maintidx
 	name string
 	is   Intervals
 	want Intervals
@@ -1686,6 +1686,8 @@ func compactTestCases() []struct {
 }
 
 func TestCompact(t *testing.T) {
+	t.Parallel()
+
 	for _, tt := range compactTestCases() {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
@@ -1698,6 +1700,8 @@ func TestCompact(t *testing.T) {
 }
 
 func TestCompact_reverse(t *testing.T) {
+	t.Parallel()
+
 	for _, tt := range compactTestCases() {
 		t.Run(tt.name+"_reverse", func(t *testing.T) {
 			t.Parallel()
@@ -1712,6 +1716,8 @@ func TestCompact_reverse(t *testing.T) {
 }
 
 func TestCompact_shuffle(t *testing.T) {
+	t.Parallel()
+
 	for _, tt := range compactTestCases() {
 		t.Run(tt.name+"_shuffle", func(t *testing.T) {
 			t.Parallel()
