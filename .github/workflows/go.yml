@@ -1,0 +1,68 @@
+name: Go
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read # TODO!
+
+jobs:
+  golangci-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+      - uses: golangci/golangci-lint-action@v6
+        with:
+          version: latest
+          only-new-issues: true
+          args: --verbose
+
+  diff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+      - run: go mod tidy -diff
+      - run: go mod download
+      - run: go mod verify
+      - run: go generate ./...
+      - name: Detect uncommitted changes
+        run: |
+          changes=$(git status --porcelain)
+          if [[ -n "$changes" ]]; then
+            {
+                echo "## :construction: Uncommitted changes"
+                echo "\`\`\`console"
+                echo "\$ git status --porcelain"
+                echo "$changes"
+                echo "\`\`\`"
+            } >> "$GITHUB_STEP_SUMMARY"
+  
+            echo "::group::Uncommitted changes"
+            echo "$changes"
+            echo "::endgroup::"
+
+            exit 1
+          fi
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+      - run: go mod download
+      - run: go mod verify
+      - run: go test -v -count=1 -race -shuffle=on ./...

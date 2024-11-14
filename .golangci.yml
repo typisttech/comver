@@ -17,10 +17,8 @@ linters:
   disable:
     - dupl
     - depguard
-    - err113
     - testpackage
     - varnamelen
-    - wrapcheck
     - wsl
     - nlreturn
     - revive
