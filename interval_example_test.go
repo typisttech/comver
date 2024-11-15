@@ -2,6 +2,7 @@ package comver_test
 
 import (
 	"fmt"
+
 	"github.com/typisttech/comver"
 )
 
