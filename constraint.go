@@ -80,7 +80,7 @@ func (c *constraint) upperbounded() bool {
 	return c.op == lessThanOrEqualTo || c.op == lessThan
 }
 
-// Check tests if a [Version] satisfies the constraints.
+// Check reports whether a [Version] satisfies the constraint.
 func (c *constraint) Check(v Version) bool {
 	if c == nil {
 		// this should never happen
