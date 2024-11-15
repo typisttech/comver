@@ -1,5 +1,4 @@
-name: Go Module Index
-
+name: Go Proxy
 on:
   push:
 
