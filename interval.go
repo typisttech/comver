@@ -1,6 +1,6 @@
 package comver
 
-// interval represents the intersection of two constraints.
+// interval represents the intersection (logical AND) of two constraints.
 type interval [2]*constraint
 
 const (
@@ -44,7 +44,7 @@ func NewInterval(c1, c2 *constraint) (interval, error) { //nolint:cyclop
 	}
 }
 
-// Check tests if a [Version] lies within the interval.
+// Check reports whether a [Version] satisfies the interval.
 func (i interval) Check(v Version) bool {
 	for _, c := range i {
 		if c != nil && !c.Check(v) {
