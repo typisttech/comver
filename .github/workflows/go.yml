@@ -9,8 +9,7 @@ on:
     branches:
       - main
 
-permissions:
-  contents: read # TODO!
+permissions: {}
 
 jobs:
   golangci-lint:
