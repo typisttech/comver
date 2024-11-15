@@ -91,7 +91,7 @@ func ExampleVersion_Compare() {
 	v2v1 := v2.Compare(v1)
 	fmt.Println(v2v1)
 
-	v2v2 := v2.Compare(v2)
+	v2v2 := v2.Compare(v2) //nolint:gocritic
 	fmt.Println(v2v2)
 
 	v2v3 := v2.Compare(v3)
