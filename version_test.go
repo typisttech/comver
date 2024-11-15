@@ -246,11 +246,11 @@ func TestVersion_Compare(t *testing.T) {
 			}
 
 			if got := v.Compare(w); got != tt.want {
-				t.Errorf("%q.Compare(%q) = %v, want %v", tt.v, tt.w, got, tt.want)
+				t.Errorf("%q.compare(%q) = %v, want %v", tt.v, tt.w, got, tt.want)
 			}
 
 			if got := w.Compare(v); got != -1*tt.want {
-				t.Errorf("%q.Compare(%q) = %v, want %v", tt.w, tt.v, got, tt.want)
+				t.Errorf("%q.compare(%q) = %v, want %v", tt.w, tt.v, got, tt.want)
 			}
 		})
 	}
