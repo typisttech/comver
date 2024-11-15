@@ -11,8 +11,7 @@ on:
     branches:
       - main
 
-permissions:
-  contents: read # TODO!!!
+permissions: {}
 
 jobs:
   govulncheck:
