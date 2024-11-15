@@ -218,7 +218,7 @@ func (v Version) Compare(w Version) int { ////nolint:cyclop,funlen
 	vPres := strings.Split(v.preRelease, ".")
 	wPres := strings.Split(w.preRelease, ".")
 
-	// comparing each dot separated identifier from left to right
+	// comparing each dot separated identifier from upper to lower
 	for i := range vPres {
 		// a larger set of pre-release fields has a higher precedence than a smaller set
 		if i >= len(wPres) {

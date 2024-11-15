@@ -1,29 +1,52 @@
 package comver
 
 const (
-	greaterThanOrEqualTo constraintOp = iota
+	greaterThanOrEqualTo ConstraintOp = iota
 	greaterThan
 	lessThan
 	lessThanOrEqualTo
 
-	ErrUnexpectedConstraintOp stringError = "unexpected constraintOp"
+	ErrUnexpectedConstraintOp stringError = "unexpected ConstraintOp"
 )
 
-type constraintOp int8
+type Constrainter interface {
+	Check(v Version) bool
+}
 
-func (op constraintOp) compare(other constraintOp) int {
+type SimpleConstrainter interface {
+	Constrainter
+
+	Ceiling() Boundless
+	Floor() Boundless
+}
+
+type ConstraintOp int8
+
+func (op ConstraintOp) compare(other ConstraintOp) int {
 	return int(op) - int(other)
 }
 
-func (op constraintOp) ceillingless() bool {
+func (op ConstraintOp) ceilingless() bool {
+	return op != lessThanOrEqualTo && op != lessThan
+}
+
+func (op ConstraintOp) upperBounded() bool {
+	return op == lessThan || op == lessThanOrEqualTo
+}
+
+func (op ConstraintOp) lowerBounded() bool {
 	return op == greaterThan || op == greaterThanOrEqualTo
 }
 
-func (op constraintOp) floorless() bool {
-	return op == lessThanOrEqualTo || op == lessThan
+func (op ConstraintOp) floorless() bool {
+	return op != greaterThan && op != greaterThanOrEqualTo
 }
 
-func (op constraintOp) String() string {
+func (op ConstraintOp) inclusive() bool {
+	return op == lessThanOrEqualTo || op == greaterThanOrEqualTo
+}
+
+func (op ConstraintOp) String() string {
 	switch op {
 	case lessThanOrEqualTo:
 		return "<="
@@ -41,7 +64,7 @@ func (op constraintOp) String() string {
 type constraint struct {
 	// The Version used in the constraint check, e.g.: the Version representing 1.2.3 in '<=1.2.3'.
 	version Version
-	op      constraintOp
+	op      ConstraintOp
 }
 
 func NewLessThanOrEqualToConstraint(v Version) *constraint {

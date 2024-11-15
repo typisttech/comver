@@ -27,7 +27,7 @@ func NewInterval(c1, c2 *constraint) (interval, error) { //nolint:cyclop
 		return interval{c1}, nil
 	case cmp == 0: // exactly the same
 		return interval{c1}, nil
-	case c1.op.ceillingless() && c2.op.ceillingless():
+	case c1.op.ceilingless() && c2.op.ceilingless():
 		// same direction
 		return interval{c2}, nil
 	case c1.op.floorless() && c2.op.floorless():
