@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"slices"
-	"time"
 )
 
 const productionFeed = "https://www.wordfence.com/api/intelligence/v2/vulnerabilities/production"
@@ -37,7 +36,6 @@ func main() {
 	err = gen("wordfence_test.go", fileData{
 		VariableName: "wordFenceVersions",
 		GeneratedBy:  "gen_wordfence.go",
-		Timestamp:    time.Now().UTC(),
 		Sources:      []string{productionFeed, scannerFeed},
 		Versions:     getVersions(vulns...),
 	})
