@@ -12,11 +12,11 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           cache: false
-      - run: go list -x -m -u github.com/${{ github.repository }}@${{ github.sha }}
+      - run: go list -m -u -json -x github.com/${{ github.repository }}@${{ github.sha }}
         env:
           GOPROXY: https://proxy.golang.org
           GOSUMDB: sum.golang.org
-      - run: go list -x -m -u github.com/${{ github.repository }}@${{ github.ref_name }}
+      - run: go list -m -u -json -x github.com/${{ github.repository }}@${{ github.ref_name }}
         env:
           GOPROXY: https://proxy.golang.org
           GOSUMDB: sum.golang.org
