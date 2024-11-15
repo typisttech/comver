@@ -1,13 +1,13 @@
 package comver
 
-// interval represents the intersection of two [constraint].
+// interval represents the intersection of two constraints.
 type interval [2]*constraint
 
 const (
 	ErrImpossibleInterval stringError = "impossible interval"
 )
 
-// NewInterval creates a new interval representing the intersection (logical AND) of two [constraint].
+// NewInterval creates a new interval representing the intersection (logical AND) of two constraints.
 //
 // If either c1 or c2 is nil, it represents a boundless range.
 // If both c1 and c2 are nil, it matches all versions (wildcard).

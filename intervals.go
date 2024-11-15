@@ -19,9 +19,6 @@ func (is Intervals) String() string {
 }
 
 // Compact returns a new [Intervals] covering the same version ranges but with the smallest number of intervals.
-//
-// This function compacts it by looking at the real version ranges covered by all the intervals and then creates
-// a new [Intervals] containing only the smallest numbers of intervals to cover the same version ranges.
 func Compact(is Intervals) Intervals {
 	if len(is) == 1 {
 		return is
