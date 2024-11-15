@@ -7,6 +7,7 @@
 <div align="center">
 
 [![Go](https://github.com/typisttech/comver/actions/workflows/go.yml/badge.svg)](https://github.com/typisttech/comver/actions/workflows/go.yml)
+[![codecov](https://codecov.io/gh/typisttech/comver/graph/badge.svg?token=GVO7RV80TJ)](https://codecov.io/gh/typisttech/comver)
 [![Go Report Card](https://goreportcard.com/badge/github.com/typisttech/comver)](https://goreportcard.com/report/github.com/typisttech/comver)
 [![GitHub Release](https://img.shields.io/github/v/release/typisttech/comver?style=flat-square&)](https://github.com/typisttech/comver/releases/latest)
 [![Go Reference](https://pkg.go.dev/badge/github.com/typisttech/comver.svg)](https://pkg.go.dev/github.com/typisttech/comver)
