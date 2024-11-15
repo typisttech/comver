@@ -1,0 +1,22 @@
+name: Go Module Index
+
+on:
+  push:
+
+permissions: {}
+
+jobs:
+  go-mod-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-go@v5
+        with:
+          cache: false
+      - run: go list -x -m -u github.com/${{ github.repository }}@${{ github.sha }}
+        env:
+          GOPROXY: https://proxy.golang.org
+          GOSUMDB: sum.golang.org
+      - run: go list -x -m -u github.com/${{ github.repository }}@${{ github.ref_name }}
+        env:
+          GOPROXY: https://proxy.golang.org
+          GOSUMDB: sum.golang.org
