@@ -11,10 +11,10 @@ const (
 	classicalVersioningRegex               = `(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?`
 	dateOnlyVersioningRegex                = `(\d{4})(?:[.:-]?(\d{2}))(?:[.:-]?(\d{2}))?(?:\.(\d+))?`
 	modifierRegex                          = `[._-]?(?:(stable|beta|b|rc|alpha|a|patch|pl|p)((?:[.-]?\d+)+)?)?`
-	ErrEmptyString             stringError = "version string is empty"
-	ErrInvalidVersionString    stringError = "invalid version string"
-	ErrNotFixedVersion         stringError = "not a fixed version"
-	ErrDateVersionWithFourBits stringError = "date versions with 4 bits"
+	errEmptyString             stringError = "version string is empty"
+	errInvalidVersionString    stringError = "invalid version string"
+	errNotFixedVersion         stringError = "not a fixed version"
+	errDateVersionWithFourBits stringError = "date versions with 4 bits"
 )
 
 var (
@@ -23,6 +23,7 @@ var (
 )
 
 // Version represents a single composer version.
+// The zero value for Version is v0.0.0.0 with an empty original string.
 type Version struct {
 	major, minor, patch, tweak uint64   `exhaustruct:"optional"`
 	modifier                   modifier `exhaustruct:"optional"`
@@ -30,10 +31,10 @@ type Version struct {
 	original                   string   `exhaustruct:"optional"`
 }
 
-// NewVersion parses a given version string, attempts to coerce a version string into
+// Parse parses a given version string, attempts to coerce a version string into
 // a [Version] object or return an error if unable to parse the version string.
 //
-// If there is a leading v or a version listed without all parts (e.g. v1.2.p5+foo) it will
+// If there is a leading v or a version listed without all parts (e.g. v1.2.p5+foo) it
 // attempt to coerce it into a valid composer version (e.g. 1.2.0.0-patch5). In both cases
 // a [Version] object is returned that can be sorted, compared, and used in constraints.
 //
@@ -42,7 +43,7 @@ type Version struct {
 //
 // [composer versioning]: https://github.com/composer/semver/
 // [version_test.go]: https://github.com/typisttech/comver/blob/main/version_test.go
-func NewVersion(v string) (Version, error) { //nolint:cyclop,funlen
+func Parse(v string) (Version, error) { //nolint:cyclop,funlen
 	original := v
 
 	// normalize to lowercase for easier pattern matching
@@ -50,38 +51,38 @@ func NewVersion(v string) (Version, error) { //nolint:cyclop,funlen
 
 	v = strings.TrimSpace(v)
 	if v == "" {
-		return Version{}, &ParseError{original, ErrEmptyString}
+		return Version{}, &ParseError{original, errEmptyString}
 	}
 
 	v = strings.TrimPrefix(v, "v")
 	if v == "" {
-		return Version{}, &ParseError{original, ErrInvalidVersionString}
+		return Version{}, &ParseError{original, errInvalidVersionString}
 	}
 
 	if strings.Contains(v, " as ") {
-		return Version{}, &ParseError{original, ErrNotFixedVersion}
+		return Version{}, &ParseError{original, errNotFixedVersion}
 	}
 
 	if hasSuffixAnyOf(v, "@stable", "@rc", "@beta", "@alpha", "@dev") {
-		return Version{}, &ParseError{original, ErrNotFixedVersion}
+		return Version{}, &ParseError{original, errNotFixedVersion}
 	}
 
 	if containsAnyOf(v, "master", "trunk", "default") {
-		return Version{}, &ParseError{original, ErrNotFixedVersion}
+		return Version{}, &ParseError{original, errNotFixedVersion}
 	}
 
 	if strings.HasPrefix(v, "dev-") {
-		return Version{}, &ParseError{original, ErrNotFixedVersion}
+		return Version{}, &ParseError{original, errNotFixedVersion}
 	}
 
 	// strip off build metadata
 	v, metadata, _ := strings.Cut(v, "+")
 	if v == "" || strings.Contains(metadata, " ") {
-		return Version{}, &ParseError{original, ErrInvalidVersionString}
+		return Version{}, &ParseError{original, errInvalidVersionString}
 	}
 
 	if strings.HasSuffix(v, "dev") {
-		return Version{}, &ParseError{original, ErrNotFixedVersion}
+		return Version{}, &ParseError{original, errNotFixedVersion}
 	}
 
 	cv := Version{
@@ -96,7 +97,7 @@ func NewVersion(v string) (Version, error) { //nolint:cyclop,funlen
 		match = dm
 	}
 	if match == nil || len(match) != 7 {
-		return Version{}, &ParseError{original, ErrInvalidVersionString}
+		return Version{}, &ParseError{original, errInvalidVersionString}
 	}
 
 	var err error
@@ -106,7 +107,7 @@ func NewVersion(v string) (Version, error) { //nolint:cyclop,funlen
 	}
 	// CalVer (as MAJOR) must be in YYYYMMDDhhmm or YYYYMMDD formats
 	if s := strconv.FormatUint(cv.major, 10); len(s) > 12 || len(s) == 11 || len(s) == 9 || len(s) == 7 {
-		return Version{}, &ParseError{original, ErrInvalidVersionString}
+		return Version{}, &ParseError{original, errInvalidVersionString}
 	}
 
 	if cv.minor, err = strconv.ParseUint(match[2], 10, 64); match[2] != "" && err != nil {
@@ -118,7 +119,7 @@ func NewVersion(v string) (Version, error) { //nolint:cyclop,funlen
 	}
 
 	if cv.major >= 1000_00 && match[4] != "" {
-		return Version{}, &ParseError{original, ErrDateVersionWithFourBits}
+		return Version{}, &ParseError{original, errDateVersionWithFourBits}
 	}
 	if cv.tweak, err = strconv.ParseUint(match[4], 10, 64); match[4] != "" && err != nil {
 		return Version{}, &ParseError{original, err}
@@ -133,12 +134,23 @@ func NewVersion(v string) (Version, error) { //nolint:cyclop,funlen
 	return cv, nil
 }
 
+// MustParse is like [Parse] but panics if the version string cannot be parsed.
+func MustParse(v string) Version {
+	cv, err := Parse(v)
+	if err != nil {
+		panic(err)
+	}
+
+	return cv
+}
+
 func hasSuffixAnyOf(s string, suffixes ...string) bool {
 	for _, suffix := range suffixes {
 		if strings.HasSuffix(s, suffix) {
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -148,6 +160,7 @@ func containsAnyOf(s string, substrs ...string) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -177,15 +190,19 @@ func (v Version) Short() string {
 	return s
 }
 
+// Original returns the original version string passed into [Parse].
+// Empty string is returned when [Version] is the zero value.
 func (v Version) Original() string {
 	return v.original
 }
 
-// Compare returns an integer comparing two versions.
+// Compare returns an integer comparing two [Version] instances.
 //
-// Pre-release versions are compared according to semantic version precedence.
+// Pre-release versions are compared according to [semantic version precedence].
 // The result is 0 when v == w, -1 when v < w, or +1 when v > w.
-func (v Version) Compare(w Version) int { ////nolint:cyclop,funlen
+//
+// [semantic version precedence]: https://semver.org/#spec-item-11
+func (v Version) Compare(w Version) int { //nolint:cyclop,funlen
 	switch {
 	case v.String() == w.String():
 		return 0
@@ -218,7 +235,7 @@ func (v Version) Compare(w Version) int { ////nolint:cyclop,funlen
 	vPres := strings.Split(v.preRelease, ".")
 	wPres := strings.Split(w.preRelease, ".")
 
-	// comparing each dot separated identifier from left to right
+	// comparing each dot separated identifier from ceiling to floor
 	for i := range vPres {
 		// a larger set of pre-release fields has a higher precedence than a smaller set
 		if i >= len(wPres) {
@@ -241,6 +258,7 @@ func (v Version) Compare(w Version) int { ////nolint:cyclop,funlen
 			if vii > wii {
 				return +1
 			}
+
 			return -1
 		}
 
@@ -252,16 +270,18 @@ func (v Version) Compare(w Version) int { ////nolint:cyclop,funlen
 			if vi > wi {
 				return +1
 			}
+
 			return -1
 		}
 
 		//nolint:godox
 		// TODO: Find out whether composer/semver supports this
 		//
-		// numeric identifiers always have lower precedence than non-numeric identifiers
+		// numeric identifiers always have floor precedence than non-numeric identifiers
 		if !vid && wid {
 			return +1
 		}
+
 		return -1
 	}
 
@@ -275,5 +295,6 @@ func isDigits(s string) bool {
 			return false
 		}
 	}
+
 	return true
 }

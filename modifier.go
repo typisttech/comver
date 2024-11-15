@@ -8,7 +8,7 @@ const (
 	modifierRC            modifier    = -10
 	modifierBeta          modifier    = -20
 	modifierAlpha         modifier    = -30
-	ErrUnexpectedModifier stringError = "unexpected modifier"
+	errUnexpectedModifier stringError = "unexpected modifier"
 )
 
 func newModifier(s string) (modifier, error) {
@@ -24,7 +24,8 @@ func newModifier(s string) (modifier, error) {
 	case "alpha", "a":
 		return modifierAlpha, nil
 	}
-	return modifierStable, ErrUnexpectedModifier
+
+	return modifierStable, errUnexpectedModifier
 }
 
 func (s modifier) String() string {

@@ -6,93 +6,38 @@ import (
 	"github.com/typisttech/comver"
 )
 
-func ExampleNewVersion() {
-	v, _ := comver.NewVersion("1.2.3")
+func ExampleParse() {
+	v, _ := comver.Parse("1.2.3")
 
 	fmt.Println(v)
 	// Output: 1.2.3.0
 }
 
-func ExampleNewVersion_full() {
-	v, _ := comver.NewVersion("1.2.3.4-beta.5+foo")
+func ExampleParse_full() {
+	v, _ := comver.Parse("1.2.3.4-beta.5+foo")
 
 	fmt.Println(v)
 	// Output: 1.2.3.4-beta5
 }
 
-func ExampleNewVersion_withLeadingV() {
-	v, _ := comver.NewVersion("v1.2.3.4-beta.5+foo")
-
-	fmt.Println(v)
-	// Output: 1.2.3.4-beta5
-}
-
-func ExampleNewVersion_error() {
-	_, err := comver.NewVersion("not a version")
+func ExampleParse_error() {
+	_, err := comver.Parse("not a version")
 
 	fmt.Println(err)
 	// Output: error parsing version string "not a version"
 }
 
-func ExampleNewVersion_dateCal() {
-	v, _ := comver.NewVersion("2010-01-02")
-
-	fmt.Println(v)
-	// Output: 2010.1.2.0
-}
-
-func ExampleNewVersion_spacePadding() {
-	v, _ := comver.NewVersion(" 1.0.0")
-
-	fmt.Println(v)
-	// Output: 1.0.0.0
-}
-
-func ExampleNewVersion_modifierShorthand() {
-	v, _ := comver.NewVersion("1.2.3-b5")
-
-	fmt.Println(v)
-	// Output: 1.2.3.0-beta5
-}
-
-func ExampleNewVersion_zeroPadding() {
-	v, _ := comver.NewVersion("00.01.03.04")
-
-	fmt.Println(v)
-	// Output: 0.1.3.4
-}
-
-func ExampleNewVersion_dateWithFourBits() {
-	_, err := comver.NewVersion("20100102.0.3.4")
-
-	fmt.Println(err)
-	// Output: error parsing version string "20100102.0.3.4"
-}
-
-func ExampleNewVersion_invalidModifier() {
-	_, err := comver.NewVersion("1.0.0-meh")
-
-	fmt.Println(err)
-	// Output: error parsing version string "1.0.0-meh"
-}
-
-func ExampleNewVersion_tooManyBits() {
-	_, err := comver.NewVersion("1.0.0.0.0")
-
-	fmt.Println(err)
-	// Output: error parsing version string "1.0.0.0.0"
-}
-
 func ExampleVersion_Compare() {
-	v1, _ := comver.NewVersion("1")
-	v2, _ := comver.NewVersion("2")
-	v3, _ := comver.NewVersion("3")
+	v1 := comver.MustParse("1")
+	v2 := comver.MustParse("2")
+	w2 := comver.MustParse("2")
+	v3 := comver.MustParse("3")
 
 	v2v1 := v2.Compare(v1)
 	fmt.Println(v2v1)
 
-	v2v2 := v2.Compare(v2) //nolint:gocritic
-	fmt.Println(v2v2)
+	v2w2 := v2.Compare(w2)
+	fmt.Println(v2w2)
 
 	v2v3 := v2.Compare(v3)
 	fmt.Println(v2v3)
@@ -104,93 +49,95 @@ func ExampleVersion_Compare() {
 }
 
 func ExampleVersion_Compare_patch() {
-	v1, _ := comver.NewVersion("1")
-	v1p, _ := comver.NewVersion("1.patch")
+	v1 := comver.MustParse("1")
+	v1p := comver.MustParse("1.patch")
 
-	v1v1p := v1.Compare(v1p)
+	got := v1.Compare(v1p)
 
-	fmt.Println(v1v1p)
+	fmt.Println(got)
 	// Output: -1
 }
 
 func ExampleVersion_Compare_preRelease() {
-	v1b5, _ := comver.NewVersion("1.0.0-beta.5")
-	v1b6, _ := comver.NewVersion("1.0.0-beta.6")
+	v1b5 := comver.MustParse("1.0.0-beta.5")
+	v1b6 := comver.MustParse("1.0.0-beta.6")
 
-	v1b5v1b6 := v1b5.Compare(v1b6)
+	got := v1b5.Compare(v1b6)
 
-	fmt.Println(v1b5v1b6)
+	fmt.Println(got)
 	// Output: -1
 }
 
-func ExampleVersion_Short_major() {
-	v, _ := comver.NewVersion("1")
+func ExampleVersion_Compare_metadata() {
+	foo := comver.MustParse("1.0.0+foo")
+	bar := comver.MustParse("1.0.0+bar")
 
-	s := v.Short()
+	got := foo.Compare(bar)
 
-	fmt.Println(s)
-	// Output: 1
+	fmt.Println(got)
+	// Output: 0
 }
 
-func ExampleVersion_Short_minor() {
-	v, _ := comver.NewVersion("1.2")
+func ExampleVersion_Short() {
+	ss := []string{
+		"1",
+		"1.2",
+		"1.2.3",
+		"1.2.3+foo",
+		"1.2.3.4",
+		"1.2.3.4.beta",
+		"1.2.3.4-beta5",
+		"1.2.3.4-beta5+foo",
+		"1.b5+foo",
+	}
 
-	s := v.Short()
+	for _, s := range ss {
+		v := comver.MustParse(s)
+		got := v.Short()
 
-	fmt.Println(s)
-	// Output: 1.2
-}
+		fmt.Printf("%-19q => %v\n", s, got)
+	}
 
-func ExampleVersion_Short_patch() {
-	v, _ := comver.NewVersion("1.2.3")
-
-	s := v.Short()
-
-	fmt.Println(s)
-	// Output: 1.2.3
-}
-
-func ExampleVersion_Short_tweak() {
-	v, _ := comver.NewVersion("1.2.3.4")
-
-	s := v.Short()
-
-	fmt.Println(s)
-	// Output: 1.2.3.4
-}
-
-func ExampleVersion_Short_modifier() {
-	v, _ := comver.NewVersion("1.2.3.4.beta")
-
-	s := v.Short()
-
-	fmt.Println(s)
-	// Output: 1.2.3.4-beta
-}
-
-func ExampleVersion_Short_preRelease() {
-	v, _ := comver.NewVersion("1.2.3.4-beta5")
-
-	s := v.Short()
-
-	fmt.Println(s)
-	// Output: 1.2.3.4-beta5
-}
-
-func ExampleVersion_Short_metadata() {
-	v, _ := comver.NewVersion("1.2.3.4-beta5+foo")
-
-	s := v.Short()
-
-	fmt.Println(s)
-	// Output: 1.2.3.4-beta5
+	// Output:
+	// "1"                 => 1
+	// "1.2"               => 1.2
+	// "1.2.3"             => 1.2.3
+	// "1.2.3+foo"         => 1.2.3
+	// "1.2.3.4"           => 1.2.3.4
+	// "1.2.3.4.beta"      => 1.2.3.4-beta
+	// "1.2.3.4-beta5"     => 1.2.3.4-beta5
+	// "1.2.3.4-beta5+foo" => 1.2.3.4-beta5
+	// "1.b5+foo"          => 1-beta5
 }
 
 func ExampleVersion_Original() {
-	v, _ := comver.NewVersion("1.b5+foo")
+	ss := []string{
+		"1",
+		"1.2",
+		"1.2.3",
+		"1.2.3+foo",
+		"1.2.3.4",
+		"1.2.3.4.beta",
+		"1.2.3.4-beta5",
+		"1.2.3.4-beta5+foo",
+		"1.b5+foo",
+	}
 
-	s := v.Original()
+	for _, s := range ss {
+		v := comver.MustParse(s)
+		got := v.Original()
 
-	fmt.Println(s)
-	// Output: 1.b5+foo
+		fmt.Printf("%-19q => %v\n", s, got)
+	}
+
+	// Output:
+	// "1"                 => 1
+	// "1.2"               => 1.2
+	// "1.2.3"             => 1.2.3
+	// "1.2.3+foo"         => 1.2.3+foo
+	// "1.2.3.4"           => 1.2.3.4
+	// "1.2.3.4.beta"      => 1.2.3.4.beta
+	// "1.2.3.4-beta5"     => 1.2.3.4-beta5
+	// "1.2.3.4-beta5+foo" => 1.2.3.4-beta5+foo
+	// "1.b5+foo"          => 1.b5+foo
 }
