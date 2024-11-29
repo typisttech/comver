@@ -72,18 +72,18 @@ var invalidWordFenceVersions = []string{ //nolint:gochecknoglobals
 }
 
 //go:generate go run gen_wordfence.go gen.go
-func TestNewVersion_Wordfence(t *testing.T) {
+func TestParse_Wordfence(t *testing.T) {
 	t.Parallel()
 
 	for _, v := range wordFenceVersions {
 		t.Run(v, func(t *testing.T) {
 			t.Parallel()
 
-			_, err := comver.NewVersion(v)
+			_, err := comver.Parse(v)
 
 			wantErr := slices.Contains(invalidWordFenceVersions, v)
 			if (err != nil) != wantErr {
-				t.Fatalf("NewVersion(%q) error = %v, wantErr %v", v, err, wantErr)
+				t.Fatalf("Parse(%q) error = %v, wantErr %v", v, err, wantErr)
 			}
 		})
 	}
