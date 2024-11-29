@@ -2,10 +2,6 @@
 
 # comver
 
-</div>
-
-<div align="center">
-
 [![Go Reference](https://pkg.go.dev/badge/github.com/typisttech/comver.svg)](https://pkg.go.dev/github.com/typisttech/comver)
 [![GitHub Release](https://img.shields.io/github/v/release/typisttech/comver?style=flat-square&)](https://github.com/typisttech/comver/releases/latest)
 [![Go](https://github.com/typisttech/comver/actions/workflows/go.yml/badge.svg)](https://github.com/typisttech/comver/actions/workflows/go.yml)
@@ -15,14 +11,14 @@
 [![X Follow @TangRufus](https://img.shields.io/badge/Follow-%40TangRufus-black?style=flat-square&logo=x&logoColor=white)](https://x.com/tangrufus)
 [![Hire Typist Tech](https://img.shields.io/badge/Hire-Typist%20Tech-ff69b4.svg?style=flat-square)](https://typist.tech/contact/)
 
-</div>
-
-<p align="center">
+<p>
   <strong>Package <code>comver</code> provides the ability to work with <a href="https://github.com/composer/semver/">composer supported versions</a> in Go.</strong>
   <br />
   <br />
   Built with ♥ by <a href="https://typist.tech/">Typist Tech</a>
 </p>
+
+</div>
 
 ---
 
