@@ -54,7 +54,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: coverage
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
         with:
           use_oidc: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork) }}
 
