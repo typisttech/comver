@@ -7,9 +7,9 @@
 [![Go](https://github.com/typisttech/comver/actions/workflows/go.yml/badge.svg)](https://github.com/typisttech/comver/actions/workflows/go.yml)
 [![codecov](https://codecov.io/gh/typisttech/comver/graph/badge.svg?token=GVO7RV80TJ)](https://codecov.io/gh/typisttech/comver)
 [![Go Report Card](https://goreportcard.com/badge/github.com/typisttech/comver)](https://goreportcard.com/report/github.com/typisttech/comver)
-[![license](https://img.shields.io/github/license/typisttech/comver.svg?style=flat-square)](https://github.com/typisttech/comver/blob/master/LICENSE)
-[![X Follow @TangRufus](https://img.shields.io/badge/Follow-%40TangRufus-black?style=flat-square&logo=x&logoColor=white)](https://x.com/tangrufus)
-[![Hire Typist Tech](https://img.shields.io/badge/Hire-Typist%20Tech-ff69b4.svg?style=flat-square)](https://typist.tech/contact/)
+[![license](https://img.shields.io/github/license/typisttech/comver.svg)](https://github.com/typisttech/comver/blob/master/LICENSE)
+[![X Follow @TangRufus](https://img.shields.io/badge/Follow-%40TangRufus-black?logo=x&logoColor=white)](https://x.com/tangrufus)
+[![Hire Typist Tech](https://img.shields.io/badge/Hire-Typist%20Tech-ff69b4.svg)](https://typist.tech/contact/)
 
 <p>
   <strong>Package <code>comver</code> provides the ability to work with <a href="https://github.com/composer/semver/">composer supported versions</a> in Go.</strong>
