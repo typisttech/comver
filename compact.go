@@ -14,8 +14,8 @@ func Compact(o Or) Constrainter { //nolint:cyclop,ireturn
 	if len(o) == 1 {
 		return o[0]
 	}
-	if slices.ContainsFunc(o, wildcard) {
-		return NewWildcard()
+	if slices.ContainsFunc(o, matchAll) {
+		return NewMatchAll()
 	}
 
 	o = slices.Clone(o)
@@ -23,13 +23,13 @@ func Compact(o Or) Constrainter { //nolint:cyclop,ireturn
 	ceiling, ceilingOk := maxFloorlessCeiling(o...)
 	floor, floorOk := minCeilinglessFloor(o...)
 
-	// short circuit if we have a wildcard
-	if ceilingOk && floorOk && matchAll(ceiling, floor) {
-		return NewWildcard()
+	// short circuit if we have a match all
+	if ceilingOk && floorOk && disjunctivelyCombineToMatchAll(ceiling, floor) {
+		return NewMatchAll()
 	}
 
 	o = slices.DeleteFunc(o, func(c CeilingFloorConstrainter) bool {
-		return c.ceiling().wildcard() || c.floor().wildcard() ||
+		return c.ceiling().matchAll() || c.floor().matchAll() ||
 			(ceilingOk && ceiling.compare(c.ceiling()) >= 0) ||
 			(floorOk && floor.compare(c.floor()) <= 0)
 	})
@@ -58,8 +58,8 @@ func Compact(o Or) Constrainter { //nolint:cyclop,ireturn
 	return slices.Clip(r)
 }
 
-func wildcard(c CeilingFloorConstrainter) bool {
-	return c.floor().wildcard() && c.ceiling().wildcard()
+func matchAll(c CeilingFloorConstrainter) bool {
+	return c.floor().matchAll() && c.ceiling().matchAll()
 }
 
 func minCeilinglessFloor(cs ...CeilingFloorConstrainter) (Endless, bool) {
@@ -67,7 +67,7 @@ func minCeilinglessFloor(cs ...CeilingFloorConstrainter) (Endless, bool) {
 	o := slices.Clone(cs)
 
 	cs = slices.DeleteFunc(cs, func(c CeilingFloorConstrainter) bool {
-		return !c.ceiling().wildcard()
+		return !c.ceiling().matchAll()
 	})
 
 	if len(cs) == 0 {
@@ -81,13 +81,13 @@ func minCeilinglessFloor(cs ...CeilingFloorConstrainter) (Endless, bool) {
 	}).floor()
 
 	o = slices.DeleteFunc(o, func(c CeilingFloorConstrainter) bool {
-		return c.ceiling().wildcard() ||
-			c.floor().wildcard()
+		return c.ceiling().matchAll() ||
+			c.floor().matchAll()
 	})
 
 	for i := range o {
 		if o[i].floor().compare(m) < 0 {
-			if o[i].Check(*m.version) || matchAll(o[i].ceiling(), m) {
+			if o[i].Check(*m.version) || disjunctivelyCombineToMatchAll(o[i].ceiling(), m) {
 				m = o[i].floor()
 			}
 
@@ -111,7 +111,7 @@ func maxFloorlessCeiling(cs ...CeilingFloorConstrainter) (Endless, bool) {
 	o := slices.Clone(cs)
 
 	cs = slices.DeleteFunc(cs, func(c CeilingFloorConstrainter) bool {
-		return !c.floor().wildcard()
+		return !c.floor().matchAll()
 	})
 
 	if len(cs) == 0 {
@@ -125,12 +125,12 @@ func maxFloorlessCeiling(cs ...CeilingFloorConstrainter) (Endless, bool) {
 	}).ceiling()
 
 	o = slices.DeleteFunc(o, func(c CeilingFloorConstrainter) bool {
-		return c.ceiling().wildcard() || c.floor().wildcard()
+		return c.ceiling().matchAll() || c.floor().matchAll()
 	})
 
 	for i := range o {
 		if o[i].ceiling().compare(m) > 0 {
-			if o[i].Check(*m.version) || matchAll(o[i].floor(), m) {
+			if o[i].Check(*m.version) || disjunctivelyCombineToMatchAll(o[i].floor(), m) {
 				m = o[i].ceiling()
 			}
 
@@ -149,7 +149,7 @@ func maxFloorlessCeiling(cs ...CeilingFloorConstrainter) (Endless, bool) {
 	return m, true
 }
 
-func matchAll(e, f Endless) bool {
+func disjunctivelyCombineToMatchAll(e, f Endless) bool {
 	if e.ceilingBounded() && f.ceilingBounded() {
 		return false
 	}

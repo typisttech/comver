@@ -114,8 +114,8 @@ func TestEndless_Check(t *testing.T) {
 			want:    false,
 		},
 		{
-			name:    "wildcard",
-			endless: NewWildcard(),
+			name:    "disjunctivelyCombineToMatchAll",
+			endless: NewMatchAll(),
 			version: MustParse("1"),
 			want:    true,
 		},
@@ -153,17 +153,17 @@ func TestEndless_Ceiling(t *testing.T) {
 		{
 			name:    "greaterThanOrEqualTo",
 			endless: NewGreaterThanOrEqualTo(MustParse("3")),
-			want:    NewWildcard(),
+			want:    NewMatchAll(),
 		},
 		{
 			name:    "greaterThan",
 			endless: NewGreaterThan(MustParse("4")),
-			want:    NewWildcard(),
+			want:    NewMatchAll(),
 		},
 		{
-			name:    "wildcard",
-			endless: NewWildcard(),
-			want:    NewWildcard(),
+			name:    "disjunctivelyCombineToMatchAll",
+			endless: NewMatchAll(),
+			want:    NewMatchAll(),
 		},
 	}
 
@@ -189,12 +189,12 @@ func TestEndless_Floor(t *testing.T) {
 		{
 			name:    "lessThan",
 			endless: NewLessThan(MustParse("1")),
-			want:    NewWildcard(),
+			want:    NewMatchAll(),
 		},
 		{
 			name:    "lessThanOrEqualTo",
 			endless: NewLessThanOrEqualTo(MustParse("2")),
-			want:    NewWildcard(),
+			want:    NewMatchAll(),
 		},
 		{
 			name:    "greaterThanOrEqualTo",
@@ -207,9 +207,9 @@ func TestEndless_Floor(t *testing.T) {
 			want:    NewGreaterThan(MustParse("4")),
 		},
 		{
-			name:    "wildcard",
-			endless: NewWildcard(),
-			want:    NewWildcard(),
+			name:    "disjunctivelyCombineToMatchAll",
+			endless: NewMatchAll(),
+			want:    NewMatchAll(),
 		},
 	}
 
@@ -224,7 +224,7 @@ func TestEndless_Floor(t *testing.T) {
 	}
 }
 
-func TestEndless_wildcard(t *testing.T) {
+func TestEndless_matchAll(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -253,8 +253,8 @@ func TestEndless_wildcard(t *testing.T) {
 			want:    false,
 		},
 		{
-			name:    "wildcard",
-			endless: NewWildcard(),
+			name:    "disjunctivelyCombineToMatchAll",
+			endless: NewMatchAll(),
 			want:    true,
 		},
 	}
@@ -262,8 +262,8 @@ func TestEndless_wildcard(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			if got := tt.endless.wildcard(); got != tt.want {
-				t.Errorf("wildcard() = %v, want %v", got, tt.want)
+			if got := tt.endless.matchAll(); got != tt.want {
+				t.Errorf("disjunctivelyCombineToMatchAll() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -293,7 +293,7 @@ func TestEndless_String(t *testing.T) {
 			want:    ">=2",
 		},
 		{
-			endless: NewWildcard(),
+			endless: NewMatchAll(),
 			want:    "*",
 		},
 	}

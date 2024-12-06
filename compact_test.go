@@ -66,17 +66,17 @@ func TestCompact(t *testing.T) {
 			},
 		},
 		{
-			name: "single_wildcard",
-			o:    Or{NewWildcard()},
-			want: NewWildcard(),
+			name: "single_match_all",
+			o:    Or{NewMatchAll()},
+			want: NewMatchAll(),
 		},
 		{
-			name: "multiple_wildcards",
-			o:    Or{NewWildcard(), NewWildcard()},
-			want: NewWildcard(),
+			name: "multiple_match_alls",
+			o:    Or{NewMatchAll(), NewMatchAll()},
+			want: NewMatchAll(),
 		},
 		{
-			name: "wildcard_trumps_everything_else",
+			name: "match_all_trumps_everything_else",
 			o: Or{
 				NewLessThan(MustParse("1")),
 				NewLessThanOrEqualTo(MustParse("1")),
@@ -91,9 +91,9 @@ func TestCompact(t *testing.T) {
 					upper: NewLessThan(MustParse("7")),
 					lower: NewGreaterThan(MustParse("6")),
 				},
-				NewWildcard(),
+				NewMatchAll(),
 			},
-			want: NewWildcard(),
+			want: NewMatchAll(),
 		},
 		{
 			name: "match_all",
@@ -101,7 +101,7 @@ func TestCompact(t *testing.T) {
 				NewLessThan(MustParse("10")),
 				NewGreaterThan(MustParse("9")),
 			},
-			want: NewWildcard(),
+			want: NewMatchAll(),
 		},
 		{
 			name: "match_all_same_version_ceiling_inclusive_floor_inclusive",
@@ -109,7 +109,7 @@ func TestCompact(t *testing.T) {
 				NewLessThanOrEqualTo(MustParse("10")),
 				NewGreaterThanOrEqualTo(MustParse("10")),
 			},
-			want: NewWildcard(),
+			want: NewMatchAll(),
 		},
 		{
 			name: "match_all_same_version_ceiling_non_inclusive_floor_inclusive",
@@ -117,7 +117,7 @@ func TestCompact(t *testing.T) {
 				NewLessThan(MustParse("10")),
 				NewGreaterThanOrEqualTo(MustParse("10")),
 			},
-			want: NewWildcard(),
+			want: NewMatchAll(),
 		},
 		{
 			name: "match_all_same_version_ceiling_inclusive_floor_non_inclusive",
@@ -125,7 +125,7 @@ func TestCompact(t *testing.T) {
 				NewLessThanOrEqualTo(MustParse("10")),
 				NewGreaterThan(MustParse("10")),
 			},
-			want: NewWildcard(),
+			want: NewMatchAll(),
 		},
 		{
 			name: "same_version_not_match_all",
@@ -1464,7 +1464,7 @@ func TestCompact(t *testing.T) {
 				},
 				NewLessThan(MustParse("4")),
 			},
-			want: NewWildcard(),
+			want: NewMatchAll(),
 		},
 		{
 			name: "match_all_within_interval",
@@ -1476,7 +1476,7 @@ func TestCompact(t *testing.T) {
 				},
 				NewLessThan(MustParse("3")),
 			},
-			want: NewWildcard(),
+			want: NewMatchAll(),
 		},
 		{
 			name: "match_all_within_intervals",
@@ -1492,7 +1492,7 @@ func TestCompact(t *testing.T) {
 				},
 				NewGreaterThan(MustParse("7")),
 			},
-			want: NewWildcard(),
+			want: NewMatchAll(),
 		},
 	}
 	for _, tt := range tests {
@@ -1524,7 +1524,7 @@ func TestCompact(t *testing.T) {
 	}
 }
 
-func Test_wildcard(t *testing.T) {
+func Test_matchAll(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -1566,8 +1566,8 @@ func Test_wildcard(t *testing.T) {
 			want: false,
 		},
 		{
-			name: "wildcard",
-			c:    NewWildcard(),
+			name: "matchAll",
+			c:    NewMatchAll(),
 			want: true,
 		},
 	}
@@ -1575,8 +1575,8 @@ func Test_wildcard(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			if got := wildcard(tt.c); got != tt.want {
-				t.Errorf("wildcard() = %v, want %v", got, tt.want)
+			if got := matchAll(tt.c); got != tt.want {
+				t.Errorf("disjunctivelyCombineToMatchAll() = %v, want %v", got, tt.want)
 			}
 		})
 	}

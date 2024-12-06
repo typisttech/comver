@@ -19,10 +19,10 @@ func And(es ...Endless) (CeilingFloorConstrainter, error) { //nolint:cyclop,iret
 	}
 
 	es = slices.Clone(es)
-	es = slices.DeleteFunc(es, Endless.wildcard)
+	es = slices.DeleteFunc(es, Endless.matchAll)
 
 	if len(es) == 0 {
-		return NewWildcard(), nil
+		return NewMatchAll(), nil
 	}
 	if len(es) == 1 {
 		return es[0], nil
@@ -94,7 +94,7 @@ func maxBoundedFloor(es ...Endless) (Endless, bool) {
 	es = slices.Clone(es)
 
 	bfs := slices.DeleteFunc(es, func(c Endless) bool {
-		return c.floor().wildcard()
+		return c.floor().matchAll()
 	})
 
 	if len(bfs) == 0 {

@@ -23,7 +23,7 @@ var (
 )
 
 // Version represents a single composer version.
-// The zero value for Version is v0.0.0.0 with an empty original string.
+// The zero value for Version is v0.0.0.0 with empty original string.
 type Version struct {
 	major, minor, patch, tweak uint64   `exhaustruct:"optional"`
 	modifier                   modifier `exhaustruct:"optional"`

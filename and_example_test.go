@@ -16,11 +16,11 @@ func ExampleAnd() {
 	// Output: >=2 <3
 }
 
-func ExampleAnd_wildcard() {
+func ExampleAnd_matchAll() {
 	a, _ := comver.And(
 		comver.NewGreaterThanOrEqualTo(comver.MustParse("2")),
 		comver.NewLessThan(comver.MustParse("3")),
-		comver.NewWildcard(),
+		comver.NewMatchAll(),
 	)
 
 	fmt.Println(a)
