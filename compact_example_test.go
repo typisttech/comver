@@ -51,7 +51,7 @@ func ExampleCompact_endless() {
 	// After: >3
 }
 
-func ExampleCompact_wildcard() {
+func ExampleCompact_matchAll() {
 	o := comver.Or{
 		comver.NewLessThan(comver.MustParse("3")),
 		comver.NewGreaterThan(comver.MustParse("2")),
@@ -67,13 +67,13 @@ func ExampleCompact_wildcard() {
 	// After: *
 }
 
-func ExampleCompact_wildcardTrumps() {
+func ExampleCompact_matchAllTrumps() {
 	o := comver.Or{
 		comver.MustAnd(
 			comver.NewLessThan(comver.MustParse("2")),
 			comver.NewGreaterThan(comver.MustParse("1")),
 		),
-		comver.NewWildcard(),
+		comver.NewMatchAll(),
 	}
 
 	c := comver.Compact(o)

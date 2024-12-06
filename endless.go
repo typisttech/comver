@@ -1,12 +1,14 @@
 package comver
 
 // Endless represents a constraint that is either floor bounded, ceiling bounded,
-// or wildcard (satisfied by any version).
-// The zero value for Endless is a wildcard constraint (satisfied by any version).
+// or [match all].
+// The zero value for Endless is a [match all] constraint which satisfied by any [Version].
+//
+// [match all]: https://github.com/composer/semver/blob/main/src/Constraint/MatchAllConstraint.php
 type Endless struct {
 	// The version used in the constraint check,
 	// e.g.: the version representing 1.2.3 in '<=1.2.3'.
-	// If nil, the Endless is a wildcard satisfied by any version.
+	// If nil, the Endless is a match all constraint which satisfied by any version.
 	version *Version
 	op      op
 }
@@ -39,7 +41,7 @@ func NewGreaterThanOrEqualTo(v Version) Endless {
 	}
 }
 
-func NewWildcard() Endless {
+func NewMatchAll() Endless {
 	return Endless{ //nolint:exhaustruct
 		version: nil,
 	}
@@ -48,7 +50,7 @@ func NewWildcard() Endless {
 // Check reports whether a [Version] satisfies the constraint.
 func (b Endless) Check(v Version) bool {
 	if b.version == nil {
-		// this is wildcard, match all versions
+		// this is a match all
 		return true
 	}
 
@@ -71,7 +73,7 @@ func (b Endless) Check(v Version) bool {
 
 func (b Endless) ceiling() Endless {
 	if !b.ceilingBounded() {
-		return NewWildcard()
+		return NewMatchAll()
 	}
 
 	return b
@@ -79,21 +81,21 @@ func (b Endless) ceiling() Endless {
 
 func (b Endless) floor() Endless {
 	if !b.floorBounded() {
-		return NewWildcard()
+		return NewMatchAll()
 	}
 
 	return b
 }
 
 func (b Endless) String() string {
-	if b.wildcard() {
+	if b.matchAll() {
 		return "*"
 	}
 
 	return b.op.String() + b.version.Short()
 }
 
-func (b Endless) wildcard() bool {
+func (b Endless) matchAll() bool {
 	return b.version == nil
 }
 
@@ -102,21 +104,21 @@ func (b Endless) wildcard() bool {
 // The comparison is done by comparing the version first, then the operator.
 //   - Versions are compared according to their semantic precedence
 //   - Operators are compared in the following order (lowest to highest): >=, >, <, <=
-//   - wildcard [Endless] is considered to be higher than ceiling bounded [Endless] while
-//     floor than floor bounded [Endless]
+//   - Match all [Endless] is considered to be higher than ceiling bounded [Endless] while
+//     lower than floor bounded [Endless]
 //
 // The result is 0 when b == d, -1 when b < d, or +1 when b > d.
 func (b Endless) compare(d Endless) int {
 	switch {
-	case b.wildcard() && d.wildcard():
+	case b.matchAll() && d.matchAll():
 		return 0
-	case b.wildcard():
+	case b.matchAll():
 		if d.floorBounded() {
 			return -1
 		}
 
 		return +1
-	case d.wildcard():
+	case d.matchAll():
 		if b.floorBounded() {
 			return +1
 		}

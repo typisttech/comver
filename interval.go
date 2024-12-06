@@ -2,7 +2,6 @@ package comver
 
 // interval represents a constraint that is both floor bounded and ceiling bounded.
 // It must be initialized via [And].
-// The zero value for interval is a constraint could never be satisfied.
 type interval struct {
 	upper Endless
 	lower Endless
