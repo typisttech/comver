@@ -1,0 +1,27 @@
+name: Go Generate
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: 23 3 * * 1 # Weekly on Monday
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_name }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  go-generate:
+    uses: typisttech/.github/.github/workflows/create-auto-merged-pull-request-go.yml@v2
+    permissions:
+      contents: write
+      pull-requests: write
+    with:
+      command: go generate ./...
+      branch: tastendruck/go-generate/${{ github.ref_name }}
+      labels: go-generate
+    secrets: inherit
