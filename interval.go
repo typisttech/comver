@@ -12,14 +12,14 @@ func (i interval) Check(v Version) bool {
 	return i.ceiling().Check(v) && i.floor().Check(v)
 }
 
+func (i interval) String() string {
+	return i.floor().String() + " " + i.ceiling().String()
+}
+
 func (i interval) ceiling() Endless {
 	return i.upper
 }
 
 func (i interval) floor() Endless {
 	return i.lower
-}
-
-func (i interval) String() string {
-	return i.floor().String() + " " + i.ceiling().String()
 }

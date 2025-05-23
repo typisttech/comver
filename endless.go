@@ -71,6 +71,14 @@ func (b Endless) Check(v Version) bool {
 	}
 }
 
+func (b Endless) String() string {
+	if b.matchAll() {
+		return "*"
+	}
+
+	return b.op.String() + b.version.Short()
+}
+
 func (b Endless) ceiling() Endless {
 	if !b.ceilingBounded() {
 		return NewMatchAll()
@@ -85,14 +93,6 @@ func (b Endless) floor() Endless {
 	}
 
 	return b
-}
-
-func (b Endless) String() string {
-	if b.matchAll() {
-		return "*"
-	}
-
-	return b.op.String() + b.version.Short()
 }
 
 func (b Endless) matchAll() bool {
