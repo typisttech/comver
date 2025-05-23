@@ -51,9 +51,13 @@ jobs:
     permissions:
       id-token: write
     steps:
+      - uses: actions/checkout@v4
+
       - uses: actions/download-artifact@v4
         with:
           name: coverage
       - uses: codecov/codecov-action@v5
         with:
           use_oidc: ${{ !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork) }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
