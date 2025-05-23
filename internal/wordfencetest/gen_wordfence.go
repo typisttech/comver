@@ -8,8 +8,10 @@ import (
 	"slices"
 )
 
-const productionFeed = "https://www.wordfence.com/api/intelligence/v2/vulnerabilities/production"
-const scannerFeed = "https://www.wordfence.com/api/intelligence/v2/vulnerabilities/scanner"
+const (
+	productionFeed = "https://www.wordfence.com/api/intelligence/v2/vulnerabilities/production"
+	scannerFeed    = "https://www.wordfence.com/api/intelligence/v2/vulnerabilities/scanner"
+)
 
 type Vulnerability struct {
 	Software []struct {

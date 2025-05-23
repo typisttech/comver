@@ -608,7 +608,11 @@ func Test_minBoundedCeiling(t *testing.T) {
 			}
 
 			if !reflect.DeepEqual(tt.cs, original) {
-				t.Errorf("minBoundedCeiling() changed the original slice got = %v, want %v", tt.cs, original)
+				t.Errorf(
+					"minBoundedCeiling() changed the original slice got = %v, want %v",
+					tt.cs,
+					original,
+				)
 			}
 		})
 	}
@@ -785,7 +789,11 @@ func Test_maxBoundedFloor(t *testing.T) {
 			}
 
 			if !reflect.DeepEqual(tt.fs, original) {
-				t.Errorf("maxBoundedFloor() changed the original slice got = %v, want %v", tt.fs, original)
+				t.Errorf(
+					"maxBoundedFloor() changed the original slice got = %v, want %v",
+					tt.fs,
+					original,
+				)
 			}
 		})
 	}

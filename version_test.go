@@ -21,7 +21,11 @@ func goodVersionTestCases() []struct {
 		{"none/2", "1.2.3.4", "1.2.3.4"},
 		{"RC uppercase", "1.0.0-rc1", "1.0.0.0-RC1"},
 		{"forces w.x.y.z/2", "0", "0.0.0.0"},
-		{"forces w.x.y.z/maximum major", "99999", "99999.0.0.0"}, // https://github.com/composer/semver/pull/158
+		{
+			"forces w.x.y.z/maximum major",
+			"99999",
+			"99999.0.0.0",
+		}, // https://github.com/composer/semver/pull/158
 		{"parses long", "10.4.13-beta", "10.4.13.0-beta"},
 		{"parses long/2", "10.4.13beta2", "10.4.13.0-beta2"},
 		{"parses long/semver", "10.4.13beta.2", "10.4.13.0-beta2"},
@@ -35,13 +39,21 @@ func goodVersionTestCases() []struct {
 		{"parses dates y.m.Y as classical", "2010.1.555", "2010.1.555.0"},
 		{"parses dates y.m.Y/2 as classical", "2010.10.200", "2010.10.200.0"},
 		{"parses CalVer YYYYMMDD (as MAJOR) versions", "20230131.0.0", "20230131.0.0.0"},
-		{"parses CalVer YYYYMMDDhhmm (as MAJOR) versions", "202301310000.0.0", "202301310000.0.0.0"},
+		{
+			"parses CalVer YYYYMMDDhhmm (as MAJOR) versions",
+			"202301310000.0.0",
+			"202301310000.0.0.0",
+		},
 		{"strips v/datetime", "v20100102", "20100102.0.0.0"},
 		{"parses dates no delimiter", "20100102", "20100102.0.0.0"},
 		{"parses dates no delimiter/2", "20100102.0", "20100102.0.0.0"},
 		{"parses dates no delimiter/3", "20100102.1.0", "20100102.1.0.0"},
 		{"parses dates no delimiter/4", "20100102.0.3", "20100102.0.3.0"},
-		{"parses dates no delimiter/earliest year", "100000", "100000.0.0.0"}, // https://github.com/composer/semver/pull/158
+		{
+			"parses dates no delimiter/earliest year",
+			"100000",
+			"100000.0.0.0",
+		}, // https://github.com/composer/semver/pull/158
 		{"parses dates w/ -", "2010-01-02", "2010.1.2.0"},
 		{"parses dates w/ .", "2012.06.07", "2012.6.7.0"},
 		{"parses numbers", "2010-01-02.5", "2010.1.2.5"},
@@ -149,11 +161,23 @@ func badVersionTestCases() []struct {
 		{"parses arbitrary/4", "dev-feature+issue-1", errNotFixedVersion},
 		{"ignores aliases", "dev-master as 1.0.0", errNotFixedVersion},
 		{"ignores aliases/2", "dev-load-varnish-only-when-used as ^2.0", errNotFixedVersion},
-		{"ignores aliases/3", "dev-load-varnish-only-when-used@dev as ^2.0@dev", errNotFixedVersion},
+		{
+			"ignores aliases/3",
+			"dev-load-varnish-only-when-used@dev as ^2.0@dev",
+			errNotFixedVersion,
+		},
 		{"ignores stability", "1.0.0+foo@dev", errNotFixedVersion},
 		{"ignores stability/2", "dev-load-varnish-only-when-used@stable", errNotFixedVersion},
-		{"semver metadata/7", "1.0.0-0.3.7", errInvalidVersionString},    // composer/semver doesn't support this
-		{"semver metadata/8", "1.0.0-x.7.z.92", errInvalidVersionString}, // composer/semver doesn't support this
+		{
+			"semver metadata/7",
+			"1.0.0-0.3.7",
+			errInvalidVersionString,
+		}, // composer/semver doesn't support this
+		{
+			"semver metadata/8",
+			"1.0.0-x.7.z.92",
+			errInvalidVersionString,
+		}, // composer/semver doesn't support this
 		{"metadata w/ alias", "1.0.0+foo as 2.0", errNotFixedVersion},
 		{"keep zero-padding/5", "041.x-dev", errNotFixedVersion},
 		{"keep zero-padding/6", "dev-041.003", errNotFixedVersion},
@@ -187,8 +211,16 @@ func badVersionTestCases() []struct {
 		{"date versions with 4 bits/earliest year", "100000.0.0.0", errDateVersionWithFourBits},
 		{"invalid CalVer (as MAJOR) versions/YYYYMMD", "2023013.0.0", errInvalidVersionString},
 		{"invalid CalVer (as MAJOR) versions/YYYYMMDDh", "202301311.0.0", errInvalidVersionString},
-		{"invalid CalVer (as MAJOR) versions/YYYYMMDDhhm", "20230131000.0.0", errInvalidVersionString},
-		{"invalid CalVer (as MAJOR) versions/YYYYMMDDhhmmX", "2023013100000.0.0", errInvalidVersionString},
+		{
+			"invalid CalVer (as MAJOR) versions/YYYYMMDDhhm",
+			"20230131000.0.0",
+			errInvalidVersionString,
+		},
+		{
+			"invalid CalVer (as MAJOR) versions/YYYYMMDDhhmmX",
+			"2023013100000.0.0",
+			errInvalidVersionString,
+		},
 
 		// composer/semver doesn't support these.
 		// taken from https://semver.org/#spec-item-11
@@ -241,7 +273,12 @@ func TestMustParse_ParseError(t *testing.T) {
 
 				e, ok := err.(error)
 				if !ok {
-					t.Fatalf("MustParse() doesn't panic with error got = %s panic = %v, wantErr %v", got, err, tt.wantErr)
+					t.Fatalf(
+						"MustParse() doesn't panic with error got = %s panic = %v, wantErr %v",
+						got,
+						err,
+						tt.wantErr,
+					)
 				}
 
 				if !errors.Is(e, tt.wantErr) {
@@ -254,7 +291,11 @@ func TestMustParse_ParseError(t *testing.T) {
 				}
 
 				if wantParseError.original != tt.v {
-					t.Errorf("MustParse() error.original = %v, want %v", wantParseError.original, tt.v)
+					t.Errorf(
+						"MustParse() error.original = %v, want %v",
+						wantParseError.original,
+						tt.v,
+					)
 				}
 			}()
 

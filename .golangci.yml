@@ -1,33 +1,26 @@
-linters:
-  presets:
-    - bugs
-    - comment
-    - complexity
-    - error
-    - format
-    - import
-    - metalinter
-    - module
-    - performance
-    - sql
-    - style
-    - test
-    - unused
+version: "2"
 
+linters:
+  default: all
   disable:
-    - dupl
+    - revive
     - testpackage
     - varnamelen
     - wsl
-    - revive
+  exclusions:
+    rules:
+      - path: _test\.go
+        linters:
+          - depguard
+          - dupl
+          - funlen
+          - lll
+          - maintidx
 
-issues:
-  exclude-rules:
-    - path: '(.+)_test\.go'
-      linters:
-        - depguard
-        - funlen
-        - maintidx
-    - path: 'version_test\.go'
-      linters:
-        - lll
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - goimports
+    - golines

@@ -18,8 +18,12 @@ const (
 )
 
 var (
-	classicalVersioningRegexp = regexp.MustCompile("^" + classicalVersioningRegex + modifierRegex + "$")
-	dateOnlyVersioningRegexp  = regexp.MustCompile("^" + dateOnlyVersioningRegex + modifierRegex + "$")
+	classicalVersioningRegexp = regexp.MustCompile(
+		"^" + classicalVersioningRegex + modifierRegex + "$",
+	)
+	dateOnlyVersioningRegexp = regexp.MustCompile(
+		"^" + dateOnlyVersioningRegex + modifierRegex + "$",
+	)
 )
 
 // Version represents a single composer version.
@@ -106,7 +110,8 @@ func Parse(v string) (Version, error) { //nolint:cyclop,funlen
 		return Version{}, &ParseError{original, err}
 	}
 	// CalVer (as MAJOR) must be in YYYYMMDDhhmm or YYYYMMDD formats
-	if s := strconv.FormatUint(cv.major, 10); len(s) > 12 || len(s) == 11 || len(s) == 9 || len(s) == 7 {
+	if s := strconv.FormatUint(cv.major, 10); len(s) > 12 || len(s) == 11 || len(s) == 9 ||
+		len(s) == 7 {
 		return Version{}, &ParseError{original, errInvalidVersionString}
 	}
 
