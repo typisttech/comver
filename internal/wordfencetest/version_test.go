@@ -17,6 +17,7 @@ var invalidWordFenceVersions = []string{ //nolint:gochecknoglobals
 	".53.2",
 	".53.4",
 	"*",
+	"* - v1.01",
 	"0.1.2 β",
 	"08-03-2018",
 	"1.0 12319",
