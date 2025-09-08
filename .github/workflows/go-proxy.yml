@@ -9,7 +9,7 @@ jobs:
     if: github.repository == 'typisttech/comver'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           cache: false
       - run: go list -m -u -json -x github.com/${{ github.repository }}@${{ github.sha }}
