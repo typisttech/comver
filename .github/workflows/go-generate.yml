@@ -16,7 +16,7 @@ permissions: {}
 
 jobs:
   go-generate:
-    uses: typisttech/.github/.github/workflows/create-auto-merged-pull-request-go.yml@v2
+    uses: typisttech/.github/.github/workflows/create-auto-merged-pull-request-go.yml@v3
     permissions:
       contents: write
       pull-requests: write
