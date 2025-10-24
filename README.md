@@ -36,6 +36,8 @@
 >
 > Due to implementation complexity, it only supports a subset of [composer versioning](https://github.com/composer/semver/).
 > Refer to the [version_test.go](https://github.com/typisttech/comver/blob/main/version_test.go) for examples.
+>
+> For better compatibility, use [`composer-semver`](https://github.com/typisttech/composer-semver/) install.
 
 ## Credits
 
