@@ -12,16 +12,24 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref_name }}
   cancel-in-progress: true
 
-permissions: {}
+permissions:
+  contents: read
 
 jobs:
-  go-generate:
-    uses: typisttech/.github/.github/workflows/create-auto-merged-pull-request-go.yml@v2
-    permissions:
-      contents: write
-      pull-requests: write
-    with:
-      command: go generate ./...
-      branch: tastendruck/go-generate/${{ github.ref_name }}
-      labels: go-generate
-    secrets: inherit
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: 'go.mod'
+
+      - run: go generate ./...
+
+      - uses: typisttech/.github/.github/actions/create-auto-merged-pull-request@v3
+        with:
+          app-id: ${{ vars.TASTENDRUCK_APP_ID }}
+          private-key: ${{ secrets.TASTENDRUCK_PRIVATE_KEY }}
+          branch: "tastendruck/github_actions/go-generate/${{ github.ref_name }}"
+          title: ":robot: `go generate ./...`"
+          labels: go-generate
