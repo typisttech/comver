@@ -11,9 +11,11 @@ func Compact(o Or) Constrainter { //nolint:cyclop,ireturn
 	if len(o) == 0 {
 		return Or{}
 	}
+
 	if len(o) == 1 {
 		return o[0]
 	}
+
 	if slices.ContainsFunc(o, matchAll) {
 		return NewMatchAll()
 	}
@@ -45,6 +47,7 @@ func Compact(o Or) Constrainter { //nolint:cyclop,ireturn
 	if floorOk {
 		r = append(r, floor)
 	}
+
 	if ceilingOk {
 		r = append(r, ceiling)
 	}

@@ -100,37 +100,37 @@ func Parse(v string) (Version, error) { //nolint:cyclop,funlen
 	} else if dm := dateOnlyVersioningRegexp.FindStringSubmatch(v); dm != nil {
 		match = dm
 	}
+
 	if match == nil || len(match) != 7 {
 		return Version{}, &ParseError{original, errInvalidVersionString}
 	}
 
 	var err error
-
-	if cv.major, err = strconv.ParseUint(match[1], 10, 64); err != nil {
+	if cv.major, err = strconv.ParseUint(match[1], 10, 64); err != nil { //nolint:noinlineerr
 		return Version{}, &ParseError{original, err}
 	}
 	// CalVer (as MAJOR) must be in YYYYMMDDhhmm or YYYYMMDD formats
-	if s := strconv.FormatUint(cv.major, 10); len(s) > 12 || len(s) == 11 || len(s) == 9 ||
-		len(s) == 7 {
+	if s := strconv.FormatUint(cv.major, 10); len(s) > 12 || len(s) == 11 || len(s) == 9 || len(s) == 7 {
 		return Version{}, &ParseError{original, errInvalidVersionString}
 	}
 
-	if cv.minor, err = strconv.ParseUint(match[2], 10, 64); match[2] != "" && err != nil {
+	if cv.minor, err = strconv.ParseUint(match[2], 10, 64); match[2] != "" && err != nil { //nolint:noinlineerr
 		return Version{}, &ParseError{original, err}
 	}
 
-	if cv.patch, err = strconv.ParseUint(match[3], 10, 64); match[3] != "" && err != nil {
+	if cv.patch, err = strconv.ParseUint(match[3], 10, 64); match[3] != "" && err != nil { //nolint:noinlineerr
 		return Version{}, &ParseError{original, err}
 	}
 
 	if cv.major >= 1000_00 && match[4] != "" {
 		return Version{}, &ParseError{original, errDateVersionWithFourBits}
 	}
-	if cv.tweak, err = strconv.ParseUint(match[4], 10, 64); match[4] != "" && err != nil {
+
+	if cv.tweak, err = strconv.ParseUint(match[4], 10, 64); match[4] != "" && err != nil { //nolint:noinlineerr
 		return Version{}, &ParseError{original, err}
 	}
 
-	if cv.modifier, err = newModifier(match[5]); err != nil {
+	if cv.modifier, err = newModifier(match[5]); err != nil { //nolint:noinlineerr
 		return Version{}, &ParseError{original, err}
 	}
 

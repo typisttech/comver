@@ -5,9 +5,9 @@ const (
 	greaterThan
 	lessThan
 	lessThanOrEqualTo
-
-	errUnexpectedOp stringError = "unexpected op"
 )
+
+const errUnexpectedOp stringError = "unexpected op"
 
 type op int8
 

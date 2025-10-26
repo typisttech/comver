@@ -96,9 +96,11 @@ func TestParse(t *testing.T) {
 			if err != nil {
 				t.Fatalf("Parse() error = %v, wantErr %v", err, nil)
 			}
+
 			if gotString := got.String(); gotString != tt.want {
 				t.Errorf("Parse().String() got = %q, want %v", gotString, tt.want)
 			}
+
 			if gotOriginal := got.Original(); gotOriginal != tt.v {
 				t.Errorf("Parse().Original() got = %q, want %v", gotOriginal, tt.v)
 			}
@@ -118,6 +120,7 @@ func TestMustParse(t *testing.T) {
 			if gotString := got.String(); gotString != tt.want {
 				t.Errorf("MustParse().String() got = %q, want %v", gotString, tt.want)
 			}
+
 			if gotOriginal := got.Original(); gotOriginal != tt.v {
 				t.Errorf("MustParse().Original() got = %q, want %v", gotOriginal, tt.v)
 			}
@@ -353,6 +356,7 @@ func TestVersion_Compare(t *testing.T) {
 			if err != nil {
 				t.Fatalf("Parse(%q) error = %v, wantErr %v", tt.v, err, nil)
 			}
+
 			w, err := Parse(tt.w)
 			if err != nil {
 				t.Fatalf("Parse(%q) error = %v, wantErr %v", tt.w, err, nil)

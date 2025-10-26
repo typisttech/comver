@@ -24,6 +24,7 @@ func And(es ...Endless) (CeilingFloorConstrainter, error) { //nolint:cyclop,iret
 	if len(es) == 0 {
 		return NewMatchAll(), nil
 	}
+
 	if len(es) == 1 {
 		return es[0], nil
 	}
@@ -35,9 +36,11 @@ func And(es ...Endless) (CeilingFloorConstrainter, error) { //nolint:cyclop,iret
 		// logic error! This should never happen
 		return nilC, errUnexpectedAndLogic
 	}
+
 	if ceilingOk && !floorOk {
 		return ceiling, nil
 	}
+
 	if !ceilingOk { // floorOk is always true here
 		return floor, nil
 	}
