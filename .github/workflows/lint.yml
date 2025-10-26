@@ -18,4 +18,4 @@ permissions:
 
 jobs:
   go:
-    uses: typisttech/.github/.github/workflows/lint-go.yml@@go3
+    uses: typisttech/.github/.github/workflows/lint-go.yml@go3
