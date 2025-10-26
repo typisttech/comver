@@ -446,6 +446,7 @@ func Test_minBoundedCeiling(t *testing.T) {
 		want   Endless
 		wantOk bool
 	}
+
 	tests := []testCase{
 		{
 			name:   "empty",
@@ -627,6 +628,7 @@ func Test_maxBoundedFloor(t *testing.T) {
 		want   Endless
 		wantOk bool
 	}
+
 	tests := []testCase{
 		{
 			name:   "empty",

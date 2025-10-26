@@ -100,12 +100,12 @@ func Parse(v string) (Version, error) { //nolint:cyclop,funlen
 	} else if dm := dateOnlyVersioningRegexp.FindStringSubmatch(v); dm != nil {
 		match = dm
 	}
+
 	if match == nil || len(match) != 7 {
 		return Version{}, &ParseError{original, errInvalidVersionString}
 	}
 
 	var err error
-
 	if cv.major, err = strconv.ParseUint(match[1], 10, 64); err != nil {
 		return Version{}, &ParseError{original, err}
 	}
@@ -126,6 +126,7 @@ func Parse(v string) (Version, error) { //nolint:cyclop,funlen
 	if cv.major >= 1000_00 && match[4] != "" {
 		return Version{}, &ParseError{original, errDateVersionWithFourBits}
 	}
+
 	if cv.tweak, err = strconv.ParseUint(match[4], 10, 64); match[4] != "" && err != nil {
 		return Version{}, &ParseError{original, err}
 	}

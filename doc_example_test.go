@@ -37,6 +37,7 @@ func Example_version() {
 
 			continue
 		}
+
 		fmt.Printf("%-21q => %v\n", s, v)
 	}
 

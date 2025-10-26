@@ -27,6 +27,7 @@ func (o Or) String() string {
 		if i > 0 {
 			s += " || "
 		}
+
 		s += o[i].String()
 	}
 
