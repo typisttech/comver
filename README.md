@@ -24,6 +24,17 @@
 
 ---
 
+> [!TIP]
+> **Hire Tang Rufus!**
+>
+> I am looking for my next role, freelance or full-time.
+> If you find this tool useful, I can build you more weird stuffs like this.
+> Let's talk if you are hiring PHP / Ruby / Go developers.
+>
+> Contact me at https://typist.tech/contact/
+
+---
+
 ## Usage
 
 > [!NOTE]
@@ -38,6 +49,16 @@
 > Refer to the [version_test.go](https://github.com/typisttech/comver/blob/main/version_test.go) for examples.
 >
 > For better compatibility, use [`composer-semver`](https://github.com/typisttech/composer-semver/) instead.
+
+> [!TIP]
+> **Hire Tang Rufus!**
+>
+> There is no need to understand any of these quirks.
+> Let me handle them for you.
+> I am seeking my next job, freelance or full-time.
+>
+> If you are hiring PHP / Ruby / Go developers,
+> contact me at https://typist.tech/contact/
 
 ## Credits
 
