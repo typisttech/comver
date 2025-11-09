@@ -1,5 +1,7 @@
 package comver
 
+import "strings"
+
 //nolint:godox
 // TODO: Make Or to be []Constrainter so that we can nest Or
 
@@ -21,15 +23,10 @@ func (o Or) Check(v Version) bool {
 }
 
 func (o Or) String() string {
-	s := ""
-
+	ss := make([]string, len(o))
 	for i := range o {
-		if i > 0 {
-			s += " || "
-		}
-
-		s += o[i].String()
+		ss[i] = o[i].String()
 	}
 
-	return s
+	return strings.Join(ss, " || ")
 }
