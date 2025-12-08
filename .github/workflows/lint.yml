@@ -17,5 +17,16 @@ permissions:
   contents: read
 
 jobs:
+  actions:
+    uses: typisttech/.github/.github/workflows/lint-actions.yml@v3
+
   go:
     uses: typisttech/.github/.github/workflows/lint-go.yml@v3
+
+  wait-for-all-lint:
+    needs:
+      - actions
+      - go
+    runs-on: ubuntu-latest
+    steps:
+      - run: exit 0
