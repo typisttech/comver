@@ -47,6 +47,7 @@ var invalidWordFenceVersions = []string{ //nolint:gochecknoglobals
 	"2.0.1.8.2",
 	"2.0.2.0.1",
 	"2.0.5.4.1",
+	"2.0.9.9.3",
 	"2.0.9.9.4",
 	"2.0e",
 	"2.24080000-WP6.6.1",
