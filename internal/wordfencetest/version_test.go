@@ -90,6 +90,7 @@ var invalidWordFenceVersions = []string{ //nolint:gochecknoglobals
 	"47.0(20-11-2023)",
 	"5 alpha 2",
 	"5.0.28.decaf",
+	"5.0.37.decaf",
 	"5.8 beta 1",
 	"5.8 beta 2",
 	"6.2-revision-5",
