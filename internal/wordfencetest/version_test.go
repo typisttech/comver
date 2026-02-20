@@ -67,6 +67,7 @@ var invalidWordFenceVersions = []string{ //nolint:gochecknoglobals
 	"2.9.9.5.4",
 	"2.9.9.5.7",
 	"2.9.9.9.9.9.5",
+	"2.9.9.9.9.9.7",
 	"2025r1",
 	"2025r2",
 	"25.04010101-WP6.8",
