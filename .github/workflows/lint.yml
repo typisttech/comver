@@ -27,9 +27,11 @@ jobs:
       golangci-lint-version-file: .tool-versions
 
   wait-for-all-lint:
+    if: cancelled() || contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'failure')
     needs:
       - actions
       - go
     runs-on: ubuntu-latest
     steps:
-      - run: exit 0
+      - name: Assert no required jobs were cancelled or failed
+        run: exit 1
