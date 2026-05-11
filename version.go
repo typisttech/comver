@@ -38,12 +38,13 @@ type Version struct {
 // Parse parses a given version string, attempts to coerce a version string into
 // a [Version] object or return an error if unable to parse the version string.
 //
-// If there is a leading v or a version listed without all parts (e.g. v1.2.p5+foo) it
-// attempt to coerce it into a valid composer version (e.g. 1.2.0.0-patch5). In both cases
-// a [Version] object is returned that can be sorted, compared, and used in constraints.
+// If there is a leading v or a version listed without all parts
+// (e.g. v1.2.p5+foo) it attempt to coerce it into a valid composer version
+// (e.g. 1.2.0.0-patch5). In both cases a [Version] object is returned that can
+// be sorted, compared, and used in constraints.
 //
-// Due to implementation complexity, it only supports a subset of [composer versioning].
-// Refer to the [version_test.go] for examples.
+// Due to implementation complexity, it only supports a subset of
+// [composer versioning]. Refer to the [version_test.go] for examples.
 //
 // [composer versioning]: https://github.com/composer/semver/
 // [version_test.go]: https://github.com/typisttech/comver/blob/main/version_test.go

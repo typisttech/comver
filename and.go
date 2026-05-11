@@ -8,9 +8,9 @@ const (
 	errImpossibleInterval stringError = "impossible interval"
 )
 
-// And returns a [CeilingFloorConstrainter] instance representing the logical AND of
-// the given [Endless] instances; or return an error if the given [Endless] instances
-// could never be satisfied at the same time.
+// And returns a [CeilingFloorConstrainter] instance representing the logical
+// AND of the given [Endless] instances; or return an error if the given
+// [Endless] instances could never be satisfied at the same time.
 func And(es ...Endless) (CeilingFloorConstrainter, error) { //nolint:cyclop,ireturn
 	var nilC CeilingFloorConstrainter
 

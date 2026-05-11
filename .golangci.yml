@@ -1,21 +1,115 @@
 version: "2"
 
 linters:
-  default: all
-  disable:
+  enable:
+    # Default
+    - errcheck
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    # Custom
+    - asasalint
+    - asciicheck
+    - bidichk
+    - bodyclose
+    - containedctx
+    - contextcheck
+    - copyloopvar
+    - cyclop
+    - depguard
+    - dogsled
+    - dupl
+    - dupword
+    - durationcheck
+    - embeddedstructfieldcheck
+    - errchkjson
+    - errname
+    - errorlint
+    - exhaustive
+    - exptostd
+    - fatcontext
+    - forcetypeassert
+    - gocheckcompilerdirectives
+    - gochecknoglobals
+    - gochecknoinits
+    - gocritic
+    - godoclint
+    - godot
+    - gosec
+    - misspell
+    - nolintlint
+    - nonamedreturns
     - revive
-    - testpackage
-    - varnamelen
-    - wsl
+    - sloglint
+    - unparam
+    - usestdlibvars
+
+  settings:
+    govet:
+      enable-all: true
+      disable:
+        - fieldalignment
+
+    staticcheck:
+      checks:
+        - all
+
+    # Custom
+    depguard:
+      rules:
+        all:
+          list-mode: strict
+          files:
+            - $all
+            - "!$test"
+          allow:
+            - $gostd
+            - github.com/typisttech/comver
+        test:
+          files:
+            - $test
+          deny:
+            - pkg: github.com/stretchr/testify
+              desc: Use standard library or 'github.com/google/go-cmp/cmp'
+
+    exhaustive:
+      default-signifies-exhaustive: true
+
+    gocritic:
+      enabled-checks:
+        - emptyStringTest
+        - preferStringWriter
+
+    godoclint:
+      enable:
+        - max-len
+        - no-unused-link
+        - require-stdlib-doclink
+
+    godot:
+      scope: toplevel
+      capital: true
+
+    nolintlint:
+      require-specific: true
+
+    revive:
+      rules:
+        - name: exported
+          disabled: true
+
   exclusions:
+    generated: disable
+    warn-unused: true
     rules:
       - path: _test\.go
         linters:
-          - depguard
           - dupl
-          - funlen
-          - lll
-          - maintidx
+
+      - path: doc.go
+        linters:
+          - godoclint
 
 formatters:
   enable:
@@ -23,4 +117,7 @@ formatters:
     - gofmt
     - gofumpt
     - goimports
-    - swaggo
+
+  settings:
+    gofumpt:
+      extra-rules: true
