@@ -4,7 +4,9 @@ import (
 	"slices"
 )
 
-// Compact returns a new [Constrainter] that is logically equivalent to the input [Or].
+// Compact returns a new [Constrainter] that is logically equivalent to the
+// input [Or].
+//
 // The returned [Constrainter] may or may be not be an [Or] instance.
 // When it is, Compact tries to return the shortest [Or] possible.
 func Compact(o Or) Constrainter { //nolint:cyclop,ireturn

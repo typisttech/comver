@@ -1,8 +1,9 @@
 package comver
 
-// Endless represents a constraint that is either floor bounded, ceiling bounded,
-// or [match all].
-// The zero value for Endless is a [match all] constraint which satisfied by any [Version].
+// Endless represents a constraint that is either floor bounded, ceiling
+// bounded, or [match all].
+// The zero value for Endless is a [match all] constraint which satisfied by any
+// [Version].
 //
 // [match all]: https://github.com/composer/semver/blob/main/src/Constraint/MatchAllConstraint.php
 type Endless struct {
@@ -103,9 +104,13 @@ func (b Endless) matchAll() bool {
 //
 // The comparison is done by comparing the version first, then the operator.
 //   - Versions are compared according to their semantic precedence
-//   - Operators are compared in the following order (lowest to highest): >=, >, <, <=
-//   - Match all [Endless] is considered to be higher than ceiling bounded [Endless] while
-//     lower than floor bounded [Endless]
+//   - Operators are compared in the following order (lowest to highest):
+//   - >=
+//   - >
+//   - <
+//   - <=
+//   - Match all [Endless] is considered to be higher than ceiling bounded
+//     [Endless] while lower than floor bounded [Endless]
 //
 // The result is 0 when b == d, -1 when b < d, or +1 when b > d.
 func (b Endless) compare(d Endless) int {

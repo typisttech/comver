@@ -3,9 +3,10 @@
 // This file was generated using data from
 //   - https://www.wordfence.com/api/intelligence/v2/vulnerabilities/production
 //   - https://www.wordfence.com/api/intelligence/v2/vulnerabilities/scanner
+
 package main
 
-var wordFenceVersions = []string{
+var wordFenceVersions = []string{ //nolint:gochecknoglobals
 	"*",
 	".3.1",
 	".47.1",

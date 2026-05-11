@@ -1,7 +1,7 @@
 package comver
 
-// interval represents a constraint that is both floor bounded and ceiling bounded.
-// It must be initialized via [And].
+// interval represents a constraint that is both floor bounded and ceiling
+// bounded. It must be initialized via [And].
 type interval struct {
 	upper Endless
 	lower Endless
