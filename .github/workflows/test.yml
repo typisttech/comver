@@ -15,6 +15,7 @@ concurrency:
 
 permissions:
   contents: read
+
 jobs:
   test:
     name: "test (${{ matrix.go-version || matrix.go-version-file }})"
